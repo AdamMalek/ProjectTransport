@@ -1,6 +1,6 @@
 ﻿namespace GPSDataServiceClient
 {
-    partial class MainServerForm
+    partial class MainClientForm
     {
         /// <summary>
         /// Wymagana zmienna projektanta.

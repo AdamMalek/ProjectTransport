@@ -8,14 +8,16 @@ namespace GPSInterfaces.Models
 {
     public class Route
     {
+        public int  RouteId { get; set; }
         public GPSPos StartPoint{ get; set; }
         public GPSPos EndPoint{ get; set; }
-        public List<AdditionalCost> AdditionalCosts { get; set; }
+        public virtual ICollection<AdditionalCost> AdditionalCosts { get; set; }
 
-        public List<GPSDataModel> RouteData { get; set; }
+        public virtual ICollection<GPSDataModel> RouteData { get; set; }
         public Route()
         {
             RouteData = new List<GPSDataModel>();
+            AdditionalCosts = new List<AdditionalCost>();
         }
     }
 }

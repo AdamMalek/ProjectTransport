@@ -8,13 +8,16 @@ using System.Threading.Tasks;
 
 namespace GPSDataService.DAL
 {
-    public class ServiceContext: DbContext
+    public class GPSContext: DbContext
     {
         public DbSet<Route> Routes { get; set; }
+        public DbSet<AdditionalCost> AdditionalCosts { get; set; }
 
-        public ServiceContext()
+        public DbSet<GPSDataModel> RouteData{ get; set; }
+
+        public GPSContext()
         {
-            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<ServiceContext>());
+            Database.SetInitializer(new DropCreateDatabaseIfModelChanges<GPSContext>());
         }
     }
 }

@@ -8,6 +8,7 @@ namespace GPSInterfaces.Models
 {
     public class AdditionalCost
     {
+        public int Id { get; set; }
         public string Description { get; set; }
         public float Price { get; set; }
     }

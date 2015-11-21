@@ -16,7 +16,7 @@ namespace GPSDataServiceClient
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainServerForm());
+            Application.Run(new MainClientForm());
         }
     }
 }

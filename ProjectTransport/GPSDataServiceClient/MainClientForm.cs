@@ -12,9 +12,9 @@ using System.Windows.Forms;
 
 namespace GPSDataServiceClient
 {
-    public partial class MainServerForm : Form
+    public partial class MainClientForm : Form
     {
-        public MainServerForm()
+        public MainClientForm()
         {
             InitializeComponent();
         }

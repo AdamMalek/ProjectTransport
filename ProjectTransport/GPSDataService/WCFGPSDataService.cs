@@ -14,7 +14,7 @@ namespace GPSDataService
     {
         public void AddRoute(Route data)
         {
-            using (var db = new ServiceContext())
+            using (var db = new GPSContext())
             {
                 if (DataValid(data))
                 {

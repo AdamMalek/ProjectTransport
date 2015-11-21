@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSDataService", "GPSDataService\GPSDataService.csproj", "{2B75CB34-0696-4164-A4D0-207D8425E807}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSDataServiceClient", "GPSDataServiceClient\GPSDataServiceClient.csproj", "{3B24CBE6-1733-4645-9D92-479C75496EBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSInterfaces", "GPSInterfaces\GPSInterfaces.csproj", "{0D704FA7-CE52-486D-BF88-2798A4E96058}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2B75CB34-0696-4164-A4D0-207D8425E807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B75CB34-0696-4164-A4D0-207D8425E807}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B75CB34-0696-4164-A4D0-207D8425E807}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B75CB34-0696-4164-A4D0-207D8425E807}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B24CBE6-1733-4645-9D92-479C75496EBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B24CBE6-1733-4645-9D92-479C75496EBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B24CBE6-1733-4645-9D92-479C75496EBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B24CBE6-1733-4645-9D92-479C75496EBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

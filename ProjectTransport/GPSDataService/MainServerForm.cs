@@ -1,4 +1,4 @@
-﻿using GPSDataService.DAL;
+﻿using GPSInterfaces.DAL;
 using GPSInterfaces.Models;
 using System;
 using System.Collections.Generic;
@@ -51,27 +51,29 @@ namespace GPSDataService
         private void btnTestWrite_Click(object sender, EventArgs e)
         {
             Route testRoute = new Route();
+            testRoute.RouteName = "Bielsko - Katowice";
             testRoute.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
             testRoute.EndPoint = new GPSPos { Latitude = 35.31f, Longitude = 172.14f };
-            testRoute.AdditionalCosts.Add(new AdditionalCost { Description = "Wjazd na autostrade", Price = 25.22f });
-            testRoute.AdditionalCosts.Add(new AdditionalCost { Description = "Wyjazd z autostrady", Price = 35.22f });
-            testRoute.RouteData.Add(new GPSDataModel
+            GPSData data1 = new GPSData
             {
                 Id = 0,
                 FuelLevel = 99.2,
                 Height = 332,
                 Position = new GPSPos { Latitude = 26.33f, Longitude = 162.10f },
                 Time = new DateTime(2015, 11, 21, 19, 20, 44)
-            });
-
-            testRoute.RouteData.Add(new GPSDataModel
+            };
+            data1.AdditionalCosts.Add(new AdditionalCost { Description = "Wjazd na autostrade", Price = 25.22f });
+            testRoute.RouteData.Add(data1);
+            GPSData data2 = new GPSData
             {
                 Id = 1,
                 FuelLevel = 94.2,
                 Height = 132,
                 Position = new GPSPos { Latitude = 30.94f, Longitude = 170.70f },
                 Time = new DateTime(2015, 11, 21, 19, 33, 27)
-            });
+            };
+            data2.AdditionalCosts.Add(new AdditionalCost { Description = "Wyjazd z autostrady", Price = 35.22f });
+            testRoute.RouteData.Add(data2);
 
 
             using (var db = new GPSContext())
@@ -102,28 +104,30 @@ namespace GPSDataService
         private Route CreateFromDB(Route sr)
         {
             Route r = new Route();
-
+            r.RouteName = sr.RouteName;
             r.RouteId = sr.RouteId;
             r.StartPoint = new GPSPos { Latitude = sr.StartPoint.Latitude, Longitude = sr.StartPoint.Longitude };
             r.EndPoint = new GPSPos { Latitude = sr.EndPoint.Latitude, Longitude = sr.EndPoint.Longitude };
 
-            foreach (var cost in sr.AdditionalCosts)
-            {
-                r.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
-            }
+
 
             foreach (var routeData in sr.RouteData)
             {
-                r.RouteData.Add(
-                    new GPSDataModel
-                    {
-                        FuelLevel = routeData.FuelLevel,
-                        Id = routeData.Id,
-                        Height = routeData.Id,
-                        Time = new DateTime(routeData.Time.ToBinary()),
-                        Position = new GPSPos { Latitude = routeData.Position.Latitude, Longitude = routeData.Position.Longitude}
-                    }
-                );
+                GPSData data = new GPSData
+                {
+                    FuelLevel = routeData.FuelLevel,
+                    Id = routeData.Id,
+                    Height = routeData.Id,
+                    Time = new DateTime(routeData.Time.ToBinary()),
+                    Position = new GPSPos { Latitude = routeData.Position.Latitude, Longitude = routeData.Position.Longitude }
+                };
+
+                foreach (var cost in routeData.AdditionalCosts)
+                {
+                    data.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
+                }
+
+                r.RouteData.Add(data);
             }
 
             return r;

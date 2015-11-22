@@ -58,7 +58,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DAL\GPSContext.cs" />
     <Compile Include="MainServerForm.cs">
       <SubType>Form</SubType>
     </Compile>

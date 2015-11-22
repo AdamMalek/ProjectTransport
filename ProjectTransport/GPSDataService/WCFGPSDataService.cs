@@ -6,7 +6,7 @@ using System.ServiceModel;
 using System.Text;
 using GPSInterfaces;
 using GPSInterfaces.Models;
-using GPSDataService.DAL;
+using GPSInterfaces.DAL;
 
 namespace GPSDataService
 {
@@ -28,7 +28,7 @@ namespace GPSDataService
         {
             using (var db = new GPSContext())
             {
-               return CreateFromDB(db.Routes.FirstOrDefault());
+                return CreateFromDB(db.Routes.FirstOrDefault());
             }
         }
 
@@ -36,27 +36,30 @@ namespace GPSDataService
         {
             Route r = new Route();
 
+            r.RouteName = sr.RouteName;
             r.RouteId = sr.RouteId;
             r.StartPoint = new GPSPos { Latitude = sr.StartPoint.Latitude, Longitude = sr.StartPoint.Longitude };
             r.EndPoint = new GPSPos { Latitude = sr.EndPoint.Latitude, Longitude = sr.EndPoint.Longitude };
 
-            foreach (var cost in sr.AdditionalCosts)
-            {
-                r.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
-            }
+
 
             foreach (var routeData in sr.RouteData)
             {
-                r.RouteData.Add(
-                    new GPSDataModel
-                    {
-                        FuelLevel = routeData.FuelLevel,
-                        Id = routeData.Id,
-                        Height = routeData.Id,
-                        Time = new DateTime(routeData.Time.ToBinary()),
-                        Position = new GPSPos { Latitude = routeData.Position.Latitude, Longitude = routeData.Position.Longitude }
-                    }
-                );
+                GPSData data = new GPSData
+                {
+                    FuelLevel = routeData.FuelLevel,
+                    Id = routeData.Id,
+                    Height = routeData.Id,
+                    Time = new DateTime(routeData.Time.ToBinary()),
+                    Position = new GPSPos { Latitude = routeData.Position.Latitude, Longitude = routeData.Position.Longitude }
+                };
+
+                foreach (var cost in routeData.AdditionalCosts)
+                {
+                    data.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
+                }
+
+                r.RouteData.Add(data);
             }
 
             return r;
@@ -78,7 +81,7 @@ namespace GPSDataService
             return true;
         }
 
-        private bool isValid(GPSDataModel data)
+        private bool isValid(GPSData data)
         {
             if (data.FuelLevel > 100 || data.FuelLevel < 0) return false;
             if (data.Position.Latitude < -90 || data.Position.Latitude > 90) return false;

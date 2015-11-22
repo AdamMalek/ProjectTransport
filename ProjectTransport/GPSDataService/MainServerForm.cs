@@ -73,14 +73,60 @@ namespace GPSDataService
                 Time = new DateTime(2015, 11, 21, 19, 33, 27)
             });
 
-        
-                using (var db = new GPSContext())
-                {
-                    db.Routes.Add(testRoute);
-                    db.SaveChanges();
-                    lbLog.Items.Add("Write test successfull!");
-                }
 
+            using (var db = new GPSContext())
+            {
+                db.Routes.Add(testRoute);
+                db.SaveChanges();
+                lbLog.Items.Add("Write test successfull!");
+            }
+
+        }
+
+        private void btnTestRead_Click(object sender, EventArgs e)
+        {
+            Route r;
+
+            using (var db = new GPSContext())
+            {
+                var sr = db.Routes.FirstOrDefault();
+
+                r = CreateFromDB(sr);
+
+                lbLog.Items.Add("Read test successfull!");
+
+                return;
+            }
+        }
+
+        private Route CreateFromDB(Route sr)
+        {
+            Route r = new Route();
+
+            r.RouteId = sr.RouteId;
+            r.StartPoint = new GPSPos { Latitude = sr.StartPoint.Latitude, Longitude = sr.StartPoint.Longitude };
+            r.EndPoint = new GPSPos { Latitude = sr.EndPoint.Latitude, Longitude = sr.EndPoint.Longitude };
+
+            foreach (var cost in sr.AdditionalCosts)
+            {
+                r.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
+            }
+
+            foreach (var routeData in sr.RouteData)
+            {
+                r.RouteData.Add(
+                    new GPSDataModel
+                    {
+                        FuelLevel = routeData.FuelLevel,
+                        Id = routeData.Id,
+                        Height = routeData.Id,
+                        Time = new DateTime(routeData.Time.ToBinary()),
+                        Position = new GPSPos { Latitude = routeData.Position.Latitude, Longitude = routeData.Position.Longitude}
+                    }
+                );
+            }
+
+            return r;
         }
     }
 }

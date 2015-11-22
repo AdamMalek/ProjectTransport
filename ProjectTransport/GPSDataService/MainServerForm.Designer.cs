@@ -91,6 +91,7 @@
             this.btnTestRead.TabIndex = 6;
             this.btnTestRead.Text = "Test reading from database";
             this.btnTestRead.UseVisualStyleBackColor = true;
+            this.btnTestRead.Click += new System.EventHandler(this.btnTestRead_Click);
             // 
             // ServiceForm
             // 

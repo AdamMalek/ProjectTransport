@@ -9,7 +9,5 @@ namespace GPSInterfaces.Models
         public DateTime Time { get; set; }
         public double Height { get; set; }
         public double FuelLevel { get; set; }
-
-        public virtual Route Route { get; set; }
     }
 }

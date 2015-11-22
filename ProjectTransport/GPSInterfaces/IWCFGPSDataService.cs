@@ -14,6 +14,6 @@ namespace GPSInterfaces
         void AddRoute(Models.Route data);
 
         [OperationContract]
-        string TestServerMethod(string param);
+        Models.Route GetTestRoute();
     }
 }

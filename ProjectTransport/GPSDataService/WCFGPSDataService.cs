@@ -24,12 +24,42 @@ namespace GPSDataService
             }
         }
 
-        public string TestServerMethod(string param)
+        public Route GetTestRoute()
         {
-            if (param.Contains("haha"))
-                return "XD";
-            else
-                return "Hello!";
+            using (var db = new GPSContext())
+            {
+               return CreateFromDB(db.Routes.FirstOrDefault());
+            }
+        }
+
+        private Route CreateFromDB(Route sr)
+        {
+            Route r = new Route();
+
+            r.RouteId = sr.RouteId;
+            r.StartPoint = new GPSPos { Latitude = sr.StartPoint.Latitude, Longitude = sr.StartPoint.Longitude };
+            r.EndPoint = new GPSPos { Latitude = sr.EndPoint.Latitude, Longitude = sr.EndPoint.Longitude };
+
+            foreach (var cost in sr.AdditionalCosts)
+            {
+                r.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
+            }
+
+            foreach (var routeData in sr.RouteData)
+            {
+                r.RouteData.Add(
+                    new GPSDataModel
+                    {
+                        FuelLevel = routeData.FuelLevel,
+                        Id = routeData.Id,
+                        Height = routeData.Id,
+                        Time = new DateTime(routeData.Time.ToBinary()),
+                        Position = new GPSPos { Latitude = routeData.Position.Latitude, Longitude = routeData.Position.Longitude }
+                    }
+                );
+            }
+
+            return r;
         }
 
         private bool DataValid(Route data)

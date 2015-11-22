@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSDataServiceClient", "GPS
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSInterfaces", "GPSInterfaces\GPSInterfaces.csproj", "{0D704FA7-CE52-486D-BF88-2798A4E96058}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransportManager", "TransportManager\TransportManager.csproj", "{B0FFDAA7-3767-426B-9ACE-3C5F34AFECD6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D704FA7-CE52-486D-BF88-2798A4E96058}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0FFDAA7-3767-426B-9ACE-3C5F34AFECD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0FFDAA7-3767-426B-9ACE-3C5F34AFECD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0FFDAA7-3767-426B-9ACE-3C5F34AFECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0FFDAA7-3767-426B-9ACE-3C5F34AFECD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

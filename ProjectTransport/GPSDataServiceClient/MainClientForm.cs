@@ -30,7 +30,9 @@ namespace GPSDataServiceClient
                     ChannelFactory<IWCFGPSDataService> channelFactory = new ChannelFactory<IWCFGPSDataService>("GPSServiceEndpoint");
                     IWCFGPSDataService proxy = channelFactory.CreateChannel();
                     lblServerResponse.Text = "Request Sent";
-                    var xx = proxy.GetTestRoute();
+                    var xx = proxy.Test();
+                    MessageBox.Show(xx);
+
                 }
                 catch
                 {

@@ -6,10 +6,8 @@
         xmlns:local="clr-namespace:TransportManager"
         xmlns:vm ="clr-namespace:TransportManager.ViewModel"
         mc:Ignorable="d"
-        Title="MainWindow" Height="465" Width="711">
-    <Window.DataContext>
-        <vm:MainWindowViewModel></vm:MainWindowViewModel>
-    </Window.DataContext>
+        Title="MainWindow" Height="465" Width="711" ResizeMode="NoResize"
+        Closing="Window_Closing">
     <Grid>
         <Button x:Name="button" Content="Import from XLS file" HorizontalAlignment="Left" Margin="196,10,0,0" VerticalAlignment="Top" Width="258"/>
         <Button x:Name="button_Copy" Content="Export to XLS file" HorizontalAlignment="Left" Margin="459,10,0,0" VerticalAlignment="Top" Width="234"/>

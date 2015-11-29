@@ -10,31 +10,29 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 using TransportManager.ViewModel;
 
-namespace TransportManager
+namespace TransportManager.View
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for LoginWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoginWindow : Window
     {
-        MainWindow()
+        public LoginWindow()
         {
             InitializeComponent();
+            var xx = DataContext;
+            ((LoginWindowViewModel)xx).login += LoginWindow_login;
         }
 
-        public MainWindow(string hash):this()
+        private void LoginWindow_login(object sender, string userHash)
         {
-            MainWindowViewModel vm = new MainWindowViewModel(hash);
-            DataContext = vm;
-        }
-
-        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Environment.Exit(0);
+            IsEnabled = false;
+            Visibility = Visibility.Hidden;
+            MainWindow mw = new MainWindow(userHash);
+            mw.Show();
         }
     }
 }

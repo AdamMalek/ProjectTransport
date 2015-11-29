@@ -12,6 +12,7 @@ namespace GPSInterfaces.Models
         public string RouteName { get; set; }
         public GPSPos StartPoint{ get; set; }
         public GPSPos EndPoint{ get; set; }
+        public virtual User User { get; set; }
 
         public virtual ICollection<GPSData> RouteData { get; set; }
         public Route()

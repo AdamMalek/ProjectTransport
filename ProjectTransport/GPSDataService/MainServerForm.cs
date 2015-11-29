@@ -50,8 +50,13 @@ namespace GPSDataService
 
         private void btnTestWrite_Click(object sender, EventArgs e)
         {
+            User user1 = new User("test1", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test1"));
+            User user2 = new User("test2", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test2"));
+            User user3 = new User("test3", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test3"));
+
             Route testRoute = new Route();
-            testRoute.RouteName = "Bielsko - Katowice";
+            testRoute.RouteName = "Krakow - Katowice";
+            testRoute.User = user1;
             testRoute.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
             testRoute.EndPoint = new GPSPos { Latitude = 35.31f, Longitude = 172.14f };
             GPSData data1 = new GPSData
@@ -75,10 +80,37 @@ namespace GPSDataService
             data2.AdditionalCosts.Add(new AdditionalCost { Description = "Wyjazd z autostrady", Price = 35.22f });
             testRoute.RouteData.Add(data2);
 
+            Route testRoute2 = new Route();
+            testRoute2.User = user2;
+
+            testRoute2.RouteName = "Bielsko - Gdansk";
+            testRoute2.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
+            testRoute2.EndPoint = new GPSPos { Latitude = 35.31f, Longitude = 172.14f };
+            GPSData data11 = new GPSData
+            {
+                Id = 0,
+                FuelLevel = 99.2,
+                Height = 332,
+                Position = new GPSPos { Latitude = 26.33f, Longitude = 162.10f },
+                Time = new DateTime(2015, 11, 21, 19, 20, 44)
+            };
+            data11.AdditionalCosts.Add(new AdditionalCost { Description = "Wjazd na autostrade", Price = 25.22f });
+            testRoute2.RouteData.Add(data11);
+            GPSData data21 = new GPSData
+            {
+                Id = 1,
+                FuelLevel = 94.2,
+                Height = 132,
+                Position = new GPSPos { Latitude = 30.94f, Longitude = 170.70f },
+                Time = new DateTime(2015, 11, 21, 19, 33, 27)
+            };
+            data21.AdditionalCosts.Add(new AdditionalCost { Description = "Wyjazd z autostrady", Price = 35.22f });
+            testRoute2.RouteData.Add(data21);
 
             using (var db = new GPSContext())
             {
                 db.Routes.Add(testRoute);
+                db.Routes.Add(testRoute2);
                 db.SaveChanges();
                 lbLog.Items.Add("Write test successfull!");
             }
@@ -87,17 +119,37 @@ namespace GPSDataService
 
         private void btnTestRead_Click(object sender, EventArgs e)
         {
-            Route r;
+           // Route r;
 
+            //using (var db = new GPSContext())
+            //{
+            //    var sr = db.Routes.FirstOrDefault();
+
+            //    r = CreateFromDB(sr);
+
+            //    lbLog.Items.Add("Read test successfull!");
+
+            //    return;
+            //}
+            //var login = "admin"; var password = "21232f297a57a5a743894a0e4a801fc3";
+            //using (var db = new GPSContext())
+            //{
+            //    User usr = db.Users.FirstOrDefault(user => (user.Login == login && user.Password == password));
+            //    if (usr != null)
+            //        lbLog.Items.Add("Read test successfull!");
+
+            //}
             using (var db = new GPSContext())
             {
-                var sr = db.Routes.FirstOrDefault();
+                List<Route> routes = new List<Route>();
 
-                r = CreateFromDB(sr);
-
-                lbLog.Items.Add("Read test successfull!");
-
-                return;
+                User currentUser = db.Users.FirstOrDefault(u => u.UserId == "21232f297a57a5a743894a0e4a801fc3");
+                List<Route> userRoutes = db.Routes.Where(r => r.User.UserId == currentUser.UserId).ToList();
+                foreach (var route in userRoutes)
+                {
+                    routes.Add(CreateFromDB(route));
+                }
+                routes.AsEnumerable();
             }
         }
 

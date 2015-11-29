@@ -25,15 +25,22 @@ namespace TransportManager
         {
             InitializeComponent();
         }
-
-        public MainWindow(string hash):this()
+        MainWindowViewModel _vm;
+        public MainWindow(Guid guid):this()
         {
-            MainWindowViewModel vm = new MainWindowViewModel(hash);
-            DataContext = vm;
+            _vm = new MainWindowViewModel(guid);
+            _vm.OnLogout += Vm_OnLogout;
+            DataContext = _vm;
+        }
+
+        private void Vm_OnLogout(object sender)
+        {
+            //DialogResult = false;
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
+            _vm.Logout.Execute(null);
             Environment.Exit(0);
         }
     }

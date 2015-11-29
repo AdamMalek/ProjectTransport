@@ -27,11 +27,11 @@ namespace TransportManager.View
             ((LoginWindowViewModel)xx).login += LoginWindow_login;
         }
 
-        private void LoginWindow_login(object sender, string userHash)
+        private void LoginWindow_login(object sender, Guid guid)
         {
             IsEnabled = false;
             Visibility = Visibility.Hidden;
-            MainWindow mw = new MainWindow(userHash);
+            MainWindow mw = new MainWindow(guid);
             mw.Show();
         }
     }

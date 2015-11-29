@@ -109,13 +109,13 @@ namespace GPSDataService
             }
         }
 
-        public IEnumerable<Route> GetAllRoutes(string userHash)
+        public IEnumerable<Route> GetAllRoutes(Guid session)
         {
             using (var db = new GPSContext())
             {
                 List<Route> routes = new List<Route>();
-                User currentUser = db.Users.FirstOrDefault(u => u.UserId == userHash);
-                List<Route> userRoutes = db.Routes.Where(r => r.User.UserId == currentUser.UserId).ToList();
+                User currentUser = GetUserBySession(session);
+                List<Route> userRoutes = db.Routes.Where(r => r.UserId == currentUser.UserId).ToList();
                 foreach (var route in userRoutes)
                 {
                     routes.Add(CreateFromDB(route));
@@ -124,11 +124,13 @@ namespace GPSDataService
             }
         }
 
-        public Route GetRouteById(string userHash, int id)
+
+        public Route GetRouteById(Guid session, int id)
         {
             using (var db = new GPSContext())
             {
-                Route route = db.Routes.FirstOrDefault(m => m.RouteId == id && m.User.UserId == userHash);
+                User usr = GetUserBySession(session);
+                Route route = db.Routes.FirstOrDefault(m => m.RouteId == id && m.UserId == usr.UserId);
                 if (route != null)
                 {
                     route = CreateFromDB(route);
@@ -172,6 +174,7 @@ namespace GPSDataService
 
         private bool DataValid(Route data)
         {
+            if (GetUserById(data.UserId) == null) return false;
             if (data == null) return false;
             //Verifying if Start and End Points are valid
             if (!isValid(data.StartPoint) || !isValid(data.EndPoint)) return false;
@@ -182,6 +185,25 @@ namespace GPSDataService
                 if (!isValid(singlePoint)) return false;
             }
             return true;
+        }
+        private User GetUserBySession(Guid sessionguid)
+        {
+            using (var db = new GPSContext())
+            {
+                Session session = db.ActiveSessions.FirstOrDefault(s => s.SessionId == sessionguid);
+                if (session != null)
+                    return session.SessionUser;
+                else
+                    return null;
+            }
+        }
+
+        private User GetUserById(string userid)
+        {
+            using (var db = new GPSContext())
+            {
+                return db.Users.FirstOrDefault(usr => usr.UserId == userid);
+            }
         }
 
         private bool isValid(GPSData data)
@@ -198,30 +220,81 @@ namespace GPSDataService
             return !(pos.Latitude < -90 || pos.Latitude > 90 || pos.Longitude < -180 || pos.Longitude > 180);
         }
 
-        public bool Login(string login, string password)
+        public Guid? Login(string login, string password)
         {
             using (var db = new GPSContext())
             {
                 User usr = db.Users.FirstOrDefault(user => (user.Login == login && user.Password == password));
-                return usr != null;
+                if (usr != null)
+                {
+                    if (IsLoggedIn(usr)) return Guid.Empty;
+                    try
+                    {
+                        Guid g = Guid.NewGuid();
+                        Session newSession = new Session();
+                        newSession.SessionId = g;
+                        newSession.SessionUser = usr;
+                        db.ActiveSessions.Add(newSession);
+                        db.SaveChanges();
+                        return g;
+
+                    }
+                    catch
+                    {
+                        return null;
+                    }
+                }
+                else
+                    return null;
             }
         }
 
-        public bool Register(string login, string password)
+        private bool IsLoggedIn(User usr)
+        {           
+            using (var db = new GPSContext())
+            {
+                bool x = db.ActiveSessions.Where(s => s.SessionUser.UserId == usr.UserId).Count() != 0;
+                return x;
+            }
+        }
+
+        public bool LogOut(Guid sessionGuid)
         {
             using (var db = new GPSContext())
             {
-                if (db.Users.FirstOrDefault(n => n.Login == login) != null) return false;
-                try
-                {                    
-                    User usr = new User(login, password);
-                    db.Users.Add(usr);
+                Session session = db.ActiveSessions.FirstOrDefault(sess => sess.SessionId == sessionGuid);
+                if (session != null)
+                {
+                    db.ActiveSessions.Remove(session);
                     db.SaveChanges();
                     return true;
                 }
+                else
+                    return false;
+            }
+        }
+
+
+        public Guid? Register(string login, string password)
+        {
+            using (var db = new GPSContext())
+            {
+                if (db.Users.FirstOrDefault(n => n.Login == login) != null) return null;
+                try
+                {
+                    Guid g = Guid.NewGuid();
+                    User usr = new User(login, password);
+                    db.Users.Add(usr);
+                    Session session = new Session();
+                    session.SessionId = g;
+                    session.SessionUser = usr;
+                    db.ActiveSessions.Add(session);
+                    db.SaveChanges();
+                    return g;
+                }
                 catch
                 {
-                    return false;
+                    return null;
                 }
             }
         }

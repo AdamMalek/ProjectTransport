@@ -14,6 +14,7 @@ namespace GPSInterfaces.DAL
         public DbSet<AdditionalCost> AdditionalCosts { get; set; }
         public DbSet<User> Users{ get; set; }
         public DbSet<GPSData> RouteData{ get; set; }
+        public DbSet<Session> ActiveSessions{ get; set; }
 
         public GPSContext()
         {

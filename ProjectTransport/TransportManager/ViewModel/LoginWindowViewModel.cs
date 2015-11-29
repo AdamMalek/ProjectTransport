@@ -14,7 +14,7 @@ namespace TransportManager.ViewModel
     public class LoginWindowViewModel
     {
 
-        public delegate void OnLoginOrRegisterSuccessful(object sender, string userHash);
+        public delegate void OnLoginOrRegisterSuccessful(object sender, Guid session);
         public event OnLoginOrRegisterSuccessful login;
 
         public ICommand LoginCommand { get; internal set; }
@@ -38,15 +38,15 @@ namespace TransportManager.ViewModel
             {
                 ChannelFactory<IWCFGPSDataService> channelFactory = new ChannelFactory<IWCFGPSDataService>("GPSServiceEndpoint");
                 IWCFGPSDataService proxy = channelFactory.CreateChannel();
-                bool RegisterCompleted = proxy.Register(Login, GPSInterfaces.Helpers.MD5Encoder.EncodeMD5(Password));
-                if (!RegisterCompleted)
+                var RegisterCompleted = proxy.Register(Login, GPSInterfaces.Helpers.MD5Encoder.EncodeMD5(Password));
+                if (RegisterCompleted == null)
                 {
                     MessageBox.Show("Error while registering!");
                 }
                 else
                 {
                     MessageBox.Show("Register successful");
-                    if (login != null) login(this, GPSInterfaces.Helpers.MD5Encoder.EncodeMD5(Login));
+                    if (login != null) login(this, RegisterCompleted.GetValueOrDefault());
                 }
             }
             catch
@@ -68,16 +68,20 @@ namespace TransportManager.ViewModel
             {
                 ChannelFactory<IWCFGPSDataService> channelFactory = new ChannelFactory<IWCFGPSDataService>("GPSServiceEndpoint");
                 IWCFGPSDataService proxy = channelFactory.CreateChannel();
-                var LoginCorrect = proxy.Login(Login,GPSInterfaces.Helpers.MD5Encoder.EncodeMD5(Password));
+                var LoginStatus = proxy.Login(Login,GPSInterfaces.Helpers.MD5Encoder.EncodeMD5(Password));
 
-                if (!LoginCorrect)
+                if (LoginStatus == null)
                 {
                     MessageBox.Show("Login or password incorrect!");
+                }
+                else if (LoginStatus == Guid.Empty)
+                {
+                    MessageBox.Show("This account is in use already!");
                 }
                 else
                 {
                     MessageBox.Show("Login successful");
-                    if (login != null) login(this, GPSInterfaces.Helpers.MD5Encoder.EncodeMD5(Login));
+                    if (login != null) login(this, LoginStatus.GetValueOrDefault());
                 }
             }
             catch

@@ -10,6 +10,7 @@ using System.Reflection;
 using System.ServiceModel;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using TransportManager.DAL;
 
@@ -21,19 +22,23 @@ namespace TransportManager.ViewModel
         {
             SaveXLS = new RelayCommand(SaveToXML,CanSave);
             LoadDB = new RelayCommand(Load, (obj) => true);
+            Logout = new RelayCommand(LogoutFunc,(obj) => true);
         }
+
+        public delegate void OnLogoutSuccessful(object sender);
+        public event OnLogoutSuccessful OnLogout;
 
         IWCFGPSDataService proxy;
 
-        public MainWindowViewModel(string userHash):this()
+        public MainWindowViewModel(Guid session) :this()
         {
-            _userHash = userHash;
+            _session = session;
             ChannelFactory<IWCFGPSDataService> channels = new ChannelFactory<IWCFGPSDataService>("GPSServiceEndpoint");
             proxy = channels.CreateChannel();
         }
         //      FIELDS
 
-        private string _userHash;
+        private Guid _session;
         private List<Route> _routes;
 
         //      PROPERTIES
@@ -53,10 +58,27 @@ namespace TransportManager.ViewModel
         public ICommand SaveXLS { get; set; }
 
         public ICommand LoadDB { get; set; }
+        public ICommand Logout { get; set; }
 
         private void Load(object obj)
         {
-            Routes = proxy.GetAllRoutes(_userHash).ToList();
+            var xx = proxy.GetAllRoutes(_session);
+            Routes = xx.ToList();
+        }
+
+        private void LogoutFunc(object obj)
+        {
+            bool result = proxy.LogOut(_session);
+            if (result)
+            {
+                MessageBox.Show("Logout completed!");
+                if (OnLogout != null) OnLogout(this);
+
+            }
+            else
+            {
+                MessageBox.Show("Logout failed!");
+            }
         }
 
         private bool CanSave(object obj)

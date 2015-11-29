@@ -18,10 +18,10 @@ namespace GPSInterfaces
         bool AddRoutes(IEnumerable<Route> data);
 
         [OperationContract]
-        IEnumerable<Route> GetAllRoutes(string userHash);
+        IEnumerable<Route> GetAllRoutes(Guid session);
 
         [OperationContract]
-        Route GetRouteById(string userHash, int id);
+        Route GetRouteById(Guid session, int id);
 
         [OperationContract]
         bool UpdateRoute(Route route);
@@ -33,10 +33,13 @@ namespace GPSInterfaces
         bool Delete(Route route);
 
         [OperationContract]
-        bool Login(string login, string password);
+        Guid? Login(string login, string password);
 
         [OperationContract]
-        bool Register(string login, string password);
+        bool LogOut(Guid session);
+
+        [OperationContract]
+        Guid? Register(string login, string password);
 
         [OperationContract]
         bool DeleteRoutes(IEnumerable<Route> data);        

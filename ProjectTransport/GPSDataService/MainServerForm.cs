@@ -52,11 +52,10 @@ namespace GPSDataService
         {
             User user1 = new User("test1", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test1"));
             User user2 = new User("test2", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test2"));
-            User user3 = new User("test3", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test3"));
 
             Route testRoute = new Route();
             testRoute.RouteName = "Krakow - Katowice";
-            testRoute.User = user1;
+            testRoute.UserId = user1.UserId;
             testRoute.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
             testRoute.EndPoint = new GPSPos { Latitude = 35.31f, Longitude = 172.14f };
             GPSData data1 = new GPSData
@@ -81,7 +80,7 @@ namespace GPSDataService
             testRoute.RouteData.Add(data2);
 
             Route testRoute2 = new Route();
-            testRoute2.User = user2;
+            testRoute2.UserId = user2.UserId;
 
             testRoute2.RouteName = "Bielsko - Gdansk";
             testRoute2.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
@@ -109,6 +108,8 @@ namespace GPSDataService
 
             using (var db = new GPSContext())
             {
+                db.Users.Add(user1);
+                db.Users.Add(user2);
                 db.Routes.Add(testRoute);
                 db.Routes.Add(testRoute2);
                 db.SaveChanges();
@@ -144,7 +145,7 @@ namespace GPSDataService
                 List<Route> routes = new List<Route>();
 
                 User currentUser = db.Users.FirstOrDefault(u => u.UserId == "21232f297a57a5a743894a0e4a801fc3");
-                List<Route> userRoutes = db.Routes.Where(r => r.User.UserId == currentUser.UserId).ToList();
+                List<Route> userRoutes = db.Routes.Where(r => r.UserId == currentUser.UserId).ToList();
                 foreach (var route in userRoutes)
                 {
                     routes.Add(CreateFromDB(route));

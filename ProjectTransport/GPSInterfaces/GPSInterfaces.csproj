@@ -57,6 +57,7 @@
     <Compile Include="Models\GPSDataModel.cs" />
     <Compile Include="Models\GPSPos.cs" />
     <Compile Include="Models\Route.cs" />
+    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

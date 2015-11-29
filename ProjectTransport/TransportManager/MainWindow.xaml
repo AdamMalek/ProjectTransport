@@ -9,8 +9,8 @@
         Title="MainWindow" Height="465" Width="711" ResizeMode="NoResize"
         Closing="Window_Closing">
     <Grid>
-        <Button x:Name="button" Content="Import from XLS file" HorizontalAlignment="Left" Margin="196,10,0,0" VerticalAlignment="Top" Width="258"/>
-        <Button x:Name="button_Copy" Content="Export to XLS file" HorizontalAlignment="Left" Margin="459,10,0,0" VerticalAlignment="Top" Width="234"/>
+        <Button x:Name="button" Content="Import from XLS file" HorizontalAlignment="Left" Margin="196,10,0,0" VerticalAlignment="Top" Width="163"/>
+        <Button x:Name="button_Copy" Content="Export to XLS file" HorizontalAlignment="Left" Margin="364,10,0,0" VerticalAlignment="Top" Width="199"/>
         <DataGrid x:Name="dataGrid" HorizontalAlignment="Left" Margin="196,35,0,0" VerticalAlignment="Top" Height="274" Width="497"/>
         <ListBox x:Name="listBox" HorizontalAlignment="Left" Height="274" Margin="10,35,0,0" VerticalAlignment="Top" Width="181" ItemsSource="{Binding Routes}">
             <ListBox.ItemTemplate>
@@ -20,6 +20,7 @@
             </ListBox.ItemTemplate>
         </ListBox>
         <Button x:Name="button_Copy1" Command="{Binding LoadDB}" Content="Load from DB" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="181"/>
+        <Button x:Name="button_Copy2" Command="{Binding Logout}" Content="Logout" HorizontalAlignment="Left" Margin="568,10,0,0" VerticalAlignment="Top" Width="127"/>
 
     </Grid>
 </Window>

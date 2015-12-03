@@ -1,5 +1,5 @@
-﻿using GPSInterfaces.DAL;
-using GPSInterfaces.Models;
+﻿using GPSDataService.DAL;
+using GPSDataService.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -50,8 +50,8 @@ namespace GPSDataService
 
         private void btnTestWrite_Click(object sender, EventArgs e)
         {
-            User user1 = new User("test1", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test1"));
-            User user2 = new User("test2", GPSInterfaces.Helpers.MD5Encoder.EncodeMD5("test2"));
+            User user1 = new User("test1", Helpers.MD5Encoder.EncodeMD5("test1"));
+            User user2 = new User("test2", Helpers.MD5Encoder.EncodeMD5("test2"));
 
             Route testRoute = new Route();
             testRoute.RouteName = "Krakow - Katowice";

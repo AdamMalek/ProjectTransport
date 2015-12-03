@@ -4,13 +4,13 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
-using GPSInterfaces;
-using GPSInterfaces.Models;
-using GPSInterfaces.DAL;
+using GPSDataService;
+using GPSDataService.Models;
+using GPSDataService.DAL;
 
 namespace GPSDataService
 {
-    public class WCFGPSDataService : IWCFGPSDataService
+    public class WCFGPSDataService : IRemoteService, IClientService
     {
         public bool AddRoute(Route data)
         {
@@ -109,12 +109,12 @@ namespace GPSDataService
             }
         }
 
-        public IEnumerable<Route> GetAllRoutes(Guid session)
+        public IEnumerable<Route> GetAllRoutes()
         {
             using (var db = new GPSContext())
             {
                 List<Route> routes = new List<Route>();
-                User currentUser = GetUserBySession(session);
+                User currentUser = null;
                 List<Route> userRoutes = db.Routes.Where(r => r.UserId == currentUser.UserId).ToList();
                 foreach (var route in userRoutes)
                 {
@@ -124,12 +124,11 @@ namespace GPSDataService
             }
         }
 
-
-        public Route GetRouteById(Guid session, int id)
+        public Route GetRouteById(int id)
         {
             using (var db = new GPSContext())
             {
-                User usr = GetUserBySession(session);
+                User usr = null;
                 Route route = db.Routes.FirstOrDefault(m => m.RouteId == id && m.UserId == usr.UserId);
                 if (route != null)
                 {
@@ -186,17 +185,6 @@ namespace GPSDataService
             }
             return true;
         }
-        private User GetUserBySession(Guid sessionguid)
-        {
-            using (var db = new GPSContext())
-            {
-                Session session = db.ActiveSessions.FirstOrDefault(s => s.SessionId == sessionguid);
-                if (session != null)
-                    return session.SessionUser;
-                else
-                    return null;
-            }
-        }
 
         private User GetUserById(string userid)
         {
@@ -220,23 +208,16 @@ namespace GPSDataService
             return !(pos.Latitude < -90 || pos.Latitude > 90 || pos.Longitude < -180 || pos.Longitude > 180);
         }
 
-        public Guid? Login(string login, string password)
+        public string Login(string login, string password)
         {
             using (var db = new GPSContext())
             {
                 User usr = db.Users.FirstOrDefault(user => (user.Login == login && user.Password == password));
                 if (usr != null)
                 {
-                    if (IsLoggedIn(usr)) return Guid.Empty;
                     try
                     {
-                        Guid g = Guid.NewGuid();
-                        Session newSession = new Session();
-                        newSession.SessionId = g;
-                        newSession.SessionUser = usr;
-                        db.ActiveSessions.Add(newSession);
-                        db.SaveChanges();
-                        return g;
+                        return usr.UserId;
 
                     }
                     catch
@@ -249,48 +230,24 @@ namespace GPSDataService
             }
         }
 
-        private bool IsLoggedIn(User usr)
-        {           
-            using (var db = new GPSContext())
-            {
-                bool x = db.ActiveSessions.Where(s => s.SessionUser.UserId == usr.UserId).Count() != 0;
-                return x;
-            }
-        }
-
-        public bool LogOut(Guid sessionGuid)
+        public bool LogOut()
         {
-            using (var db = new GPSContext())
-            {
-                Session session = db.ActiveSessions.FirstOrDefault(sess => sess.SessionId == sessionGuid);
-                if (session != null)
-                {
-                    db.ActiveSessions.Remove(session);
-                    db.SaveChanges();
-                    return true;
-                }
-                else
-                    return false;
-            }
+            //
+            return true;
         }
 
 
-        public Guid? Register(string login, string password)
+        public string Register(string login, string password)
         {
             using (var db = new GPSContext())
             {
                 if (db.Users.FirstOrDefault(n => n.Login == login) != null) return null;
                 try
                 {
-                    Guid g = Guid.NewGuid();
                     User usr = new User(login, password);
                     db.Users.Add(usr);
-                    Session session = new Session();
-                    session.SessionId = g;
-                    session.SessionUser = usr;
-                    db.ActiveSessions.Add(session);
                     db.SaveChanges();
-                    return g;
+                    return usr.UserId;
                 }
                 catch
                 {

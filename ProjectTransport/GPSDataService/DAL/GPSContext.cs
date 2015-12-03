@@ -1,4 +1,4 @@
-﻿using GPSInterfaces.Models;
+﻿using GPSDataService.Models;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GPSInterfaces.DAL
+namespace GPSDataService.DAL
 {
     public class GPSContext: DbContext
     {

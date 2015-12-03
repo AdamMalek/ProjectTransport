@@ -41,6 +41,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Selectors" />
+    <Reference Include="System.identitymodel.services" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -51,13 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\GPSContext.cs" />
+    <Compile Include="Helpers\CustomUsernameValidator.cs" />
     <Compile Include="Helpers\MD5Encoder.cs" />
-    <Compile Include="IWCFGPSDataService.cs" />
     <Compile Include="Models\AdditionalCost.cs" />
     <Compile Include="Models\GPSDataModel.cs" />
     <Compile Include="Models\GPSPos.cs" />
     <Compile Include="Models\Route.cs" />
-    <Compile Include="Models\Session.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

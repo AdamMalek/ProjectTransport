@@ -60,6 +60,9 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Selectors" />
+    <Reference Include="System.identitymodel.services" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
@@ -73,12 +76,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DAL\GPSContext.cs" />
+    <Compile Include="Helpers\CustomUsernameValidator.cs" />
+    <Compile Include="Helpers\MD5Encoder.cs" />
+    <Compile Include="IWCFGPSDataService.cs" />
     <Compile Include="MainServerForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="MainServerForm.Designer.cs">
       <DependentUpon>MainServerForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Models\AdditionalCost.cs" />
+    <Compile Include="Models\GPSDataModel.cs" />
+    <Compile Include="Models\GPSPos.cs" />
+    <Compile Include="Models\Route.cs" />
+    <Compile Include="Models\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WCFGPSDataService.cs" />
@@ -109,12 +121,6 @@
     <None Include="App.config">
       <SubType>Designer</SubType>
     </None>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GPSInterfaces\GPSInterfaces.csproj">
-      <Project>{0d704fa7-ce52-486d-bf88-2798a4e96058}</Project>
-      <Name>GPSInterfaces</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">

@@ -1,4 +1,4 @@
-﻿using GPSInterfaces.Models;
+﻿using GPSDataService.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,22 +6,26 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 
-namespace GPSInterfaces
+namespace GPSDataService
 {
     [ServiceContract]
-    public interface IWCFGPSDataService
+    public interface IRemoteService
     {
         [OperationContract]
         bool AddRoute(Route data);
 
         [OperationContract]
-        bool AddRoutes(IEnumerable<Route> data);
+        bool AddRoutes(IEnumerable<Route> data);        
+    }
+
+    [ServiceContract]
+    public interface IClientService
+    {
+        [OperationContract]
+        IEnumerable<Route> GetAllRoutes();
 
         [OperationContract]
-        IEnumerable<Route> GetAllRoutes(Guid session);
-
-        [OperationContract]
-        Route GetRouteById(Guid session, int id);
+        Route GetRouteById(int id);
 
         [OperationContract]
         bool UpdateRoute(Route route);
@@ -33,15 +37,15 @@ namespace GPSInterfaces
         bool Delete(Route route);
 
         [OperationContract]
-        Guid? Login(string login, string password);
+        string Login(string login, string password);
 
         [OperationContract]
-        bool LogOut(Guid session);
+        bool LogOut();
 
         [OperationContract]
-        Guid? Register(string login, string password);
+        string Register(string login, string password);
 
         [OperationContract]
-        bool DeleteRoutes(IEnumerable<Route> data);        
+        bool DeleteRoutes(IEnumerable<Route> data);
     }
 }

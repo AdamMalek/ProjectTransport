@@ -55,7 +55,7 @@ namespace GPSDataService
 
             Route testRoute = new Route();
             testRoute.RouteName = "Krakow - Katowice";
-            testRoute.UserId = user1.UserId;
+            testRoute.User = user1;
             testRoute.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
             testRoute.EndPoint = new GPSPos { Latitude = 35.31f, Longitude = 172.14f };
             GPSData data1 = new GPSData
@@ -80,7 +80,7 @@ namespace GPSDataService
             testRoute.RouteData.Add(data2);
 
             Route testRoute2 = new Route();
-            testRoute2.UserId = user2.UserId;
+            testRoute2.User = user2;
 
             testRoute2.RouteName = "Bielsko - Gdansk";
             testRoute2.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
@@ -145,7 +145,7 @@ namespace GPSDataService
                 List<Route> routes = new List<Route>();
 
                 User currentUser = db.Users.FirstOrDefault(u => u.UserId == "21232f297a57a5a743894a0e4a801fc3");
-                List<Route> userRoutes = db.Routes.Where(r => r.UserId == currentUser.UserId).ToList();
+                List<Route> userRoutes = currentUser.Routes.ToList();
                 foreach (var route in userRoutes)
                 {
                     routes.Add(CreateFromDB(route));

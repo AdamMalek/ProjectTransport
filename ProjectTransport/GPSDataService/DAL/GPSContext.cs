@@ -12,11 +12,12 @@ namespace GPSDataService.DAL
     {
         public DbSet<Route> Routes { get; set; }
         public DbSet<AdditionalCost> AdditionalCosts { get; set; }
-        public DbSet<User> Users{ get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<GPSData> RouteData{ get; set;}
 
         public GPSContext()
         {
+            this.Configuration.ProxyCreationEnabled = false;
             Database.SetInitializer(new DropCreateDatabaseIfModelChanges<GPSContext>());
         }
 

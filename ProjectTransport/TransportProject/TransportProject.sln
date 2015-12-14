@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSDataService", "GPSDataService\GPSDataService.csproj", "{2B75CB34-0696-4164-A4D0-207D8425E807}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TransportProject", "TransportProject\TransportProject.csproj", "{A4E91535-D892-4F41-8788-DDA22E6F1294}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{2B75CB34-0696-4164-A4D0-207D8425E807}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2B75CB34-0696-4164-A4D0-207D8425E807}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2B75CB34-0696-4164-A4D0-207D8425E807}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2B75CB34-0696-4164-A4D0-207D8425E807}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

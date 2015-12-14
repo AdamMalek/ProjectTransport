@@ -77,7 +77,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DAL\GPSContext.cs" />
-    <Compile Include="Helpers\CustomUsernameValidator.cs" />
     <Compile Include="Helpers\MD5Encoder.cs" />
     <Compile Include="IWCFGPSDataService.cs" />
     <Compile Include="MainServerForm.cs">

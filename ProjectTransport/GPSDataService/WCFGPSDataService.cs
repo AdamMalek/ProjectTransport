@@ -5,150 +5,203 @@ using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
 using GPSDataService;
-using GPSDataService.Models;
 using GPSDataService.DAL;
+using GPSDataService.Models;
+using System.Data.Entity;
 
 namespace GPSDataService
 {
+
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerSession)]
     public class WCFGPSDataService : IRemoteService, IClientService
     {
-        public bool AddRoute(Route data)
-        {
-            using (var db = new GPSContext())
-            {
-                if (DataValid(data))
-                {
-                    db.Routes.Add(data);
-                    db.SaveChanges();
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            }
-        }
+        string _userKey;
+        User _currentUser;
+        bool _isLogged = false;
 
-        public bool AddRoutes(IEnumerable<Route> routedata)
+        public bool RemoteAddRoute(Route route)
         {
-            using (var db = new GPSContext())
+            if (isValid(route))
             {
-                foreach (var data in routedata)
+                using (var db = new GPSContext())
                 {
-                    if (DataValid(data))
-                    {
-                        db.Routes.Add(data);
-                    }
-                    else
+                    User user = db.Users.FirstOrDefault(usr => usr.UserId == route.User.UserId);
+                    if (user == null)
                     {
                         return false;
                     }
-                }
-                db.SaveChanges();
-                return true;
-            }
-        }
+                    else
+                    {
+                        route.User = user;
+                    }
 
-        public bool Delete(Route route)
-        {
-            using (var db = new GPSContext())
-            {
-                Route r = db.Routes.FirstOrDefault(m => m.RouteId == route.RouteId);
-                if (r != null)
-                {
-                    db.Routes.Remove(r);
+                    db.Routes.Add(route);
                     db.SaveChanges();
                     return true;
                 }
-                else
-                {
-                    return false;
-                }
             }
+            return false;
         }
 
-        public bool DeleteRoutes(IEnumerable<Route> data)
+        public bool AddRoute(Route route)
         {
+            if (!_isLogged) return false;
+            if (isValid(route))
+            {
+                route.User = _currentUser;
+                using (var db = new GPSContext())
+                {
+                    db.Routes.Add(route);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool AddRoutes(IEnumerable<Route> data)
+        {
+            if (!_isLogged) return false;
+
+            foreach (var route in data)
+            {
+                if (isValid(route)) return false;
+            }
+
             using (var db = new GPSContext())
             {
                 foreach (var route in data)
                 {
-                    Route r = db.Routes.FirstOrDefault(m => m.RouteId == route.RouteId);
-                    if (r != null)
-                    {
-                        db.Routes.Remove(r);
-                    }
-                    else
-                    {
-                        return false;
-                    }
-                }
-                db.SaveChanges();
-                return true;
-            }
-        }
-
-        public bool UpdateRoute(Route route)
-        {
-            using (var db = new GPSContext())
-            {
-                Route r = db.Routes.FirstOrDefault(m => m.RouteId == route.RouteId);
-                if (r != null)
-                {
-                    r.RouteName = route.RouteName;
-                    r.StartPoint = route.StartPoint;
-                    r.EndPoint = r.EndPoint;
-                    r.RouteData = r.RouteData;
+                    route.User = _currentUser;
+                    db.Routes.Add(route);
                     db.SaveChanges();
-                    return true;
                 }
-                else
-                {
-                    return false;
-                }
+                return true;
             }
         }
 
         public IEnumerable<Route> GetAllRoutes()
         {
-            using (var db = new GPSContext())
-            {
-                List<Route> routes = new List<Route>();
-                User currentUser = null;
-                List<Route> userRoutes = db.Routes.Where(r => r.UserId == currentUser.UserId).ToList();
-                foreach (var route in userRoutes)
-                {
-                    routes.Add(CreateFromDB(route));
-                }
-                return routes.AsEnumerable();
-            }
+            if (!_isLogged) return null;
+
+            return _currentUser.Routes.ToList();
         }
 
         public Route GetRouteById(int id)
         {
+            if (!_isLogged) return null;
+            return _currentUser.Routes.FirstOrDefault(route => route.RouteId == id);
+        }
+
+        public bool UpdateRoute(Route route)
+        {
+            if (!_isLogged) return false;
+
             using (var db = new GPSContext())
             {
-                User usr = null;
-                Route route = db.Routes.FirstOrDefault(m => m.RouteId == id && m.UserId == usr.UserId);
-                if (route != null)
+                Route dbRoute = GetRouteById(route.RouteId);
+
+                if (dbRoute != null)
                 {
-                    route = CreateFromDB(route);
+                    dbRoute.RouteName = route.RouteName;
+                    dbRoute.StartPoint = route.StartPoint;
+                    dbRoute.EndPoint = route.EndPoint;
+                    dbRoute.RouteData = route.RouteData;
+                    db.SaveChanges();
+                    return true;
                 }
-                return route;
+                else
+                {
+                    return false;
+                }
             }
         }
+
+        public string Test()
+        {
+            if (!_isLogged) return "NO_LOGON";
+
+            return _userKey;
+        }
+
+        public bool Delete(Route route)
+        {
+            if (!_isLogged) return false;
+
+            Route dbRoute = GetRouteById(route.RouteId);
+
+            if (dbRoute != null)
+            {
+                using (var db = new GPSContext())
+                {
+                    db.Routes.Remove(dbRoute);
+                    db.SaveChanges();
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public string Login(string login, string password)
+        {
+            using (var db = new GPSContext())
+            {
+                User usr = db.Users.Include(x => x.Routes.Select(y => y.RouteData.Select(z => z.AdditionalCosts))).
+                    FirstOrDefault(user => (user.Login == login && user.Password == password));
+
+                if (usr != null)
+                {
+                    _currentUser = usr;
+                    _userKey = usr.UserId;
+                    _isLogged = true;
+                    return _userKey;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public string Register(string login, string password)
+        {
+            using (var db = new GPSContext())
+            {
+                User usr = db.Users.FirstOrDefault(user => (user.Login == login && user.Password == password));
+                if (usr == null)
+                {
+                    usr = new User();
+                    usr.Login = login;
+                    usr.Password = password;
+                    usr.UserId = Helpers.MD5Encoder.EncodeMD5(login);
+
+                    db.Users.Add(usr);
+                    db.SaveChanges();
+
+                    _currentUser = usr;
+                    _userKey = usr.UserId;
+                    _isLogged = true;
+
+                    return _userKey;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+        // HELPERS
 
         private Route CreateFromDB(Route sr)
         {
             Route r = new Route();
-
             r.RouteName = sr.RouteName;
             r.RouteId = sr.RouteId;
             r.StartPoint = new GPSPos { Latitude = sr.StartPoint.Latitude, Longitude = sr.StartPoint.Longitude };
             r.EndPoint = new GPSPos { Latitude = sr.EndPoint.Latitude, Longitude = sr.EndPoint.Longitude };
-
-
-
             foreach (var routeData in sr.RouteData)
             {
                 GPSData data = new GPSData
@@ -163,35 +216,23 @@ namespace GPSDataService
                 foreach (var cost in routeData.AdditionalCosts)
                 {
                     data.AdditionalCosts.Add(new AdditionalCost { Description = cost.Description, Id = cost.Id, Price = cost.Price });
+
+                    r.RouteData.Add(data);
                 }
-
-                r.RouteData.Add(data);
             }
-
             return r;
         }
 
-        private bool DataValid(Route data)
+        // DATA VALIDATION
+        private bool isValid(Route route)
         {
-            if (GetUserById(data.UserId) == null) return false;
-            if (data == null) return false;
-            //Verifying if Start and End Points are valid
-            if (!isValid(data.StartPoint) || !isValid(data.EndPoint)) return false;
-
-            //Verifying if all route points are valid
-            foreach (var singlePoint in data.RouteData)
+            if (route == null) return false;
+            if (!isValid(route.StartPoint) || !isValid(route.EndPoint)) return false;
+            foreach (var singlePoint in route.RouteData)
             {
                 if (!isValid(singlePoint)) return false;
             }
             return true;
-        }
-
-        private User GetUserById(string userid)
-        {
-            using (var db = new GPSContext())
-            {
-                return db.Users.FirstOrDefault(usr => usr.UserId == userid);
-            }
         }
 
         private bool isValid(GPSData data)
@@ -206,59 +247,6 @@ namespace GPSDataService
         private bool isValid(GPSPos pos)
         {
             return !(pos.Latitude < -90 || pos.Latitude > 90 || pos.Longitude < -180 || pos.Longitude > 180);
-        }
-
-        public string Login(string login, string password)
-        {
-            using (var db = new GPSContext())
-            {
-                User usr = db.Users.FirstOrDefault(user => (user.Login == login && user.Password == password));
-                if (usr != null)
-                {
-                    try
-                    {
-                        return usr.UserId;
-
-                    }
-                    catch
-                    {
-                        return null;
-                    }
-                }
-                else
-                    return null;
-            }
-        }
-
-        public bool LogOut()
-        {
-            //
-            return true;
-        }
-
-
-        public string Register(string login, string password)
-        {
-            using (var db = new GPSContext())
-            {
-                if (db.Users.FirstOrDefault(n => n.Login == login) != null) return null;
-                try
-                {
-                    User usr = new User(login, password);
-                    db.Users.Add(usr);
-                    db.SaveChanges();
-                    return usr.UserId;
-                }
-                catch
-                {
-                    return null;
-                }
-            }
-        }
-
-        public string Test()
-        {
-            return "Test successful";
         }
     }
 }

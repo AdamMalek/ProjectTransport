@@ -4,12 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TransportProject"
+        xmlns:vm="clr-namespace:TransportProject.ViewModels"
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525">
+    <Window.DataContext>
+        <vm:MainWindowVM></vm:MainWindowVM>
+    </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+    </Window.Resources>
     <Grid>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="170,211,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
-        <TextBox x:Name="txtLogin" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="test1" VerticalAlignment="Top" Width="120" Margin="145,137,0,0"/>
-        <TextBox x:Name="txtPassword" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="test1" VerticalAlignment="Top" Width="120" Margin="145,174,0,0"/>
+        <Canvas HorizontalAlignment="Left" Height="32" Margin="0" VerticalAlignment="Top" Width="517" Visibility="{Binding IsLoggedOut, Converter={StaticResource BoolToVis}}">
+            <Label x:Name="label" Content="Login:" HorizontalAlignment="Left" VerticalAlignment="Top" />
+            <TextBox x:Name="txtLogin" HorizontalAlignment="Left" Height="23" TextWrapping="Wrap" Text="{Binding Username}" VerticalAlignment="Top" Width="120" Canvas.Left="42" Canvas.Top="3"/>
+            <Label x:Name="label1" Content="Password:" HorizontalAlignment="Left" VerticalAlignment="Top" Canvas.Left="167" Canvas.Top="3"/>
+            <PasswordBox x:Name="passwordBox" PasswordChanged="passwordBox_PasswordChanged" HorizontalAlignment="Left" Margin="0" VerticalAlignment="Top" Width="120" Height="23" Canvas.Left="230" Canvas.Top="3"/>
+            <Button x:Name="button" Content="Login" HorizontalAlignment="Left" VerticalAlignment="Top" Width="152" Height="23" Canvas.Left="355" Canvas.Top="3" Command="{Binding LoginCMD}"/>
+        </Canvas>
+        <Canvas HorizontalAlignment="Left" Height="32" VerticalAlignment="Top" Width="517" Visibility="{Binding IsLoggedIn, Converter={StaticResource BoolToVis}}" Margin="0,32,0,0">
+            <Label x:Name="label2" Content="hello, " Canvas.Left="10" Canvas.Top="4"/>
+            <Label x:Name="label2_Copy" Content="{Binding Username}" Canvas.Left="44" Canvas.Top="4" FontWeight="Bold"/>
+            <Button x:Name="button1" Content="LogOut" Command="{Binding LogoutCMD}" Canvas.Left="432" Canvas.Top="7" Width="75"/>
 
+        </Canvas>
     </Grid>
 </Window>

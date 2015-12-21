@@ -48,11 +48,12 @@ namespace GPSDataService
             if (!_isLogged) return false;
             if (isValid(route))
             {
-                route.User = _currentUser;
                 using (var db = new GPSContext())
                 {
+                    route.User = db.Users.First(usr => usr.UserId == _userKey);
                     db.Routes.Add(route);
                     db.SaveChanges();
+                    UpdateUserData();
                     return true;
                 }
             }
@@ -76,6 +77,7 @@ namespace GPSDataService
                     db.Routes.Add(route);
                     db.SaveChanges();
                 }
+                UpdateUserData();
                 return true;
             }
         }
@@ -83,7 +85,6 @@ namespace GPSDataService
         public IEnumerable<Route> GetAllRoutes()
         {
             if (!_isLogged) return null;
-
             return _currentUser.Routes.ToList();
         }
 
@@ -99,7 +100,7 @@ namespace GPSDataService
 
             using (var db = new GPSContext())
             {
-                Route dbRoute = GetRouteById(route.RouteId);
+                Route dbRoute = db.Routes.FirstOrDefault(r => r.RouteId == route.RouteId);
 
                 if (dbRoute != null)
                 {
@@ -108,6 +109,7 @@ namespace GPSDataService
                     dbRoute.EndPoint = route.EndPoint;
                     dbRoute.RouteData = route.RouteData;
                     db.SaveChanges();
+                    UpdateUserData();
                     return true;
                 }
                 else
@@ -128,20 +130,22 @@ namespace GPSDataService
         {
             if (!_isLogged) return false;
 
-            Route dbRoute = GetRouteById(route.RouteId);
 
-            if (dbRoute != null)
+            using (var db = new GPSContext())
             {
-                using (var db = new GPSContext())
+                Route dbRoute = db.Routes.FirstOrDefault(r => r.RouteId == route.RouteId);
+
+                if (dbRoute != null)
                 {
                     db.Routes.Remove(dbRoute);
                     db.SaveChanges();
+                    UpdateUserData();
                     return true;
                 }
-            }
-            else
-            {
-                return false;
+                else
+                {
+                    return false;
+                }
             }
         }
 
@@ -163,6 +167,15 @@ namespace GPSDataService
                 {
                     return null;
                 }
+            }
+        }
+
+        private void UpdateUserData()
+        {
+            using (var db = new GPSContext())
+            {
+                _currentUser = db.Users.Include(x => x.Routes.Select(y => y.RouteData.Select(z => z.AdditionalCosts))).
+                        FirstOrDefault(user => (user.UserId == _userKey));
             }
         }
 

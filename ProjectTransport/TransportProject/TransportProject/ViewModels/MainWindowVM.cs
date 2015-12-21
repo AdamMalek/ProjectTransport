@@ -19,6 +19,13 @@ namespace TransportProject.ViewModels
         LoginError = 1
     };
 
+    public enum eRegisterMethod
+    {
+        Add,
+        Update,
+        Remove
+    }
+
     public class MainWindowVM : INotifyPropertyChanged
     {
         private string _username;
@@ -68,16 +75,36 @@ namespace TransportProject.ViewModels
 
         ProjectService.Route _selectedRoute;
 
-        internal bool RegisterRoute(Route r)
+        internal bool RegisterRoute(Route r, eRegisterMethod method)
         {
-            var x = proxy.AddRoute(r);
-            SyncRoutes();
-            return x;
+            if (method == eRegisterMethod.Add)
+            {
+                var x = proxy.AddRoute(r);
+                SyncRoutes();
+                return x;
+            }
+            else if (method == eRegisterMethod.Update)
+            {
+                var x = proxy.UpdateRoute(r);
+                SyncRoutes();
+                return x;
+            }
+            else
+            {
+                var x = proxy.Delete(r);
+                SyncRoutes();
+                return x;
+            }
         }
 
         private void SyncRoutes()
         {
             Routes = proxy.GetAllRoutes().ToList();
+        }
+
+        internal void CloseConnection()
+        {
+            proxy.Close();
         }
 
         public ProjectService.Route SelectedRoute
@@ -118,7 +145,7 @@ namespace TransportProject.ViewModels
 
         private void Logout(object obj)
         {
-            proxy.Close();
+            CloseConnection();
             IsLoggedIn = false;
             Routes = null;
             SelectedRoute = null;

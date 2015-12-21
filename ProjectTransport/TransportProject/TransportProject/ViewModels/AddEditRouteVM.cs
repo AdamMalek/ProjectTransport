@@ -108,11 +108,11 @@ namespace TransportProject.ViewModels
         {
             RouteName = r.RouteName;
             StartPoint = new ProjectService.GPSPos();
-            StartPoint.Latitude = r.StartPoint.Latitude;
-            StartPoint.Longitude = r.StartPoint.Longitude;
+            _startLatitude = r.StartPoint.Latitude;
+            _startLongitude = r.StartPoint.Longitude;
             EndPoint = new ProjectService.GPSPos();
-            EndPoint.Latitude = r.EndPoint.Latitude;
-            EndPoint.Longitude = r.EndPoint.Longitude;
+            _endLatitude = r.EndPoint.Latitude;
+            _endLongitude = r.EndPoint.Longitude;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

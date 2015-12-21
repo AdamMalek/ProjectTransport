@@ -86,9 +86,47 @@ namespace TransportProject
             var x = MessageBox.Show("Are you sure you want to delete this route? This operation cannot be reverted!", "Are You sure?", MessageBoxButton.YesNo);
             if (x == MessageBoxResult.Yes)
             {
-                var y =_vm.RegisterRoute(_vm.SelectedRoute, eRegisterMethod.Remove);
+                var y = _vm.RegisterRoute(_vm.SelectedRoute, eRegisterMethod.Remove);
                 if (y)
                     MessageBox.Show("Deleted!");
+            }
+        }
+
+        private void btnAddGPSData_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = new AddEditRoutePointVM();
+            Views.AddEditRoutePointWindow w = new Views.AddEditRoutePointWindow(vm);
+            var x = w.ShowDialog();
+            if (x == true)
+            {
+                ProjectService.GPSData newData = new ProjectService.GPSData
+                {
+                    AdditionalCosts = vm.AdditionalCosts.ToArray(),
+                    FuelLevel = vm.FuelLevel,
+                    Height = vm.Height,
+                    Position = vm.Position,
+                    Time = vm.Time
+            };
+                var tmp = _vm.SelectedRoute.RouteData.ToList();
+                tmp.Add(newData);
+                _vm.SelectedRoute.RouteData = tmp.ToArray();
+                _vm.RegisterRoute(_vm.SelectedRoute, eRegisterMethod.Update);
+            }
+        }
+
+        private void btnEditGPSData_Click(object sender, RoutedEventArgs e)
+        {
+            var vm = new AddEditRoutePointVM(_vm.SelectedGPSData);
+            Views.AddEditRoutePointWindow w = new Views.AddEditRoutePointWindow(vm);
+            var x = w.ShowDialog();
+            if (x == true)
+            {
+                _vm.SelectedGPSData.AdditionalCosts = vm.AdditionalCosts.ToArray();
+                _vm.SelectedGPSData.FuelLevel = vm.FuelLevel;
+                _vm.SelectedGPSData.Height = vm.Height;
+                _vm.SelectedGPSData.Position = vm.Position;
+                _vm.SelectedGPSData.Time = vm.Time;
+                _vm.RegisterRoute(_vm.SelectedRoute, eRegisterMethod.Update);
             }
         }
     }

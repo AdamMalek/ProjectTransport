@@ -449,7 +449,7 @@ namespace TransportProject.ProjectService {
         private int IdField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private float PriceField;
+        private double PriceField;
         
         [System.Runtime.Serialization.OptionalFieldAttribute()]
         private TransportProject.ProjectService.GPSData RouteDataField;
@@ -491,7 +491,7 @@ namespace TransportProject.ProjectService {
         }
         
         [System.Runtime.Serialization.DataMemberAttribute()]
-        public float Price {
+        public double Price {
             get {
                 return this.PriceField;
             }

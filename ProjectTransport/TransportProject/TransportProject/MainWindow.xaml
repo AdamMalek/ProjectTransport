@@ -48,8 +48,8 @@
         <Button x:Name="btnAddRoute" Content="Add new route" HorizontalAlignment="Left" Margin="10,396,0,0" VerticalAlignment="Top" Width="160" Height="27" Click="btnAddRoute_Click" IsEnabled="{Binding IsLoggedIn}"/>
         <Button x:Name="btnEditRoute" Content="Edit selected route" HorizontalAlignment="Left" Margin="10,428,0,0" VerticalAlignment="Top" Width="160" Height="27" IsEnabled="{Binding IsLoggedIn}" Click="btnEditRoute_Click"/>
         <Button x:Name="btnDeleteRoute" Content="Delete selected route" HorizontalAlignment="Left" Margin="10,460,0,0" VerticalAlignment="Top" Width="160" Height="27" IsEnabled="{Binding IsLoggedIn}" Click="btnDeleteRoute_Click"/>
-        <Button x:Name="btnAddGPSData" Content="Add new route point" HorizontalAlignment="Left" Margin="175,37,0,0" VerticalAlignment="Top" Width="178" Height="31" IsEnabled="{Binding IsLoggedIn}"/>
-        <Button x:Name="btnEditGPSData" Content="Edit selected route point" HorizontalAlignment="Left" Margin="360,37,0,0" VerticalAlignment="Top" Width="178" Height="31" IsEnabled="{Binding IsLoggedIn}"/>
+        <Button x:Name="btnAddGPSData" Content="Add new route point" HorizontalAlignment="Left" Margin="175,37,0,0" VerticalAlignment="Top" Width="178" Height="31" IsEnabled="{Binding IsLoggedIn}" Click="btnAddGPSData_Click"/>
+        <Button x:Name="btnEditGPSData" Content="Edit selected route point" HorizontalAlignment="Left" Margin="360,37,0,0" VerticalAlignment="Top" Width="178" Height="31" IsEnabled="{Binding IsLoggedIn}" Click="btnEditGPSData_Click"/>
         <Button x:Name="btnDeleteGPSData" Content="Delete selected route point" HorizontalAlignment="Left" Margin="545,37,0,0" VerticalAlignment="Top" Width="177" Height="31" IsEnabled="{Binding IsLoggedIn}"/>
     </Grid>
 </Window>

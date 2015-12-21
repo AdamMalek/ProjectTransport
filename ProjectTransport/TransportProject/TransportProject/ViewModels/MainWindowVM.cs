@@ -118,9 +118,9 @@ namespace TransportProject.ViewModels
             }
         }
 
-        ProjectService.Route _selectedGPSData;
+        ProjectService.GPSData _selectedGPSData;
 
-        public ProjectService.Route SelectedGPSData
+        public ProjectService.GPSData SelectedGPSData
         {
             get
             { return _selectedGPSData; }

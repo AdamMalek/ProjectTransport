@@ -15,8 +15,13 @@ namespace GPSDataService.Models
         [DataMember]
         public string Description { get; set; }
         [DataMember]
-        public float Price { get; set; }
+        public double Price { get; set; }
         [DataMember]
         public virtual GPSData RouteData { get; set; }
+
+        public override string ToString()
+        {
+            return Description + ": " + Price;
+        }
     }
 }

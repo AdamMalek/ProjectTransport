@@ -53,7 +53,7 @@
     <xs:sequence>
       <xs:element minOccurs="0" name="Description" nillable="true" type="xs:string" />
       <xs:element minOccurs="0" name="Id" type="xs:int" />
-      <xs:element minOccurs="0" name="Price" type="xs:float" />
+      <xs:element minOccurs="0" name="Price" type="xs:double" />
       <xs:element minOccurs="0" name="RouteData" nillable="true" type="tns:GPSData" />
     </xs:sequence>
   </xs:complexType>

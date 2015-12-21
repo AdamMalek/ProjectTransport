@@ -9,17 +9,25 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using TransportProject.ProjectService;
 
 namespace TransportProject.ViewModels
 {
-    public class MainWindowVM: INotifyPropertyChanged
+    public enum eLoginStatus
+    {
+        LoginSuccessful = 0,
+        LoginError = 1
+    };
+
+    public class MainWindowVM : INotifyPropertyChanged
     {
         private string _username;
         public string Username { get { return _username; } set { _username = value; RaisePropertyChange("Username"); } }
         public string Password { get; set; }
 
         private bool _isLoggedIn;
-        public bool IsLoggedIn {
+        public bool IsLoggedIn
+        {
             get
             {
                 return _isLoggedIn;
@@ -31,7 +39,9 @@ namespace TransportProject.ViewModels
                 RaisePropertyChange("IsLoggedOut");
             }
         }
-        public bool IsLoggedOut { get
+        public bool IsLoggedOut
+        {
+            get
             {
                 return !IsLoggedIn;
             }
@@ -42,35 +52,108 @@ namespace TransportProject.ViewModels
         private ProjectService.ClientServiceClient proxy;
         private string _userKey;
 
+        List<ProjectService.Route> _routes;
+
+        public List<ProjectService.Route> Routes
+        {
+            get
+            { return _routes; }
+            set
+            {
+                _routes = value;
+                RaisePropertyChange("Routes");
+            }
+        }
+
+
+        ProjectService.Route _selectedRoute;
+
+        internal bool RegisterRoute(Route r)
+        {
+            var x = proxy.AddRoute(r);
+            SyncRoutes();
+            return x;
+        }
+
+        private void SyncRoutes()
+        {
+            Routes = proxy.GetAllRoutes().ToList();
+        }
+
+        public ProjectService.Route SelectedRoute
+        {
+            get
+            { return _selectedRoute; }
+            set
+            {
+                _selectedRoute = value;
+                RaisePropertyChange("SelectedRoute");
+            }
+        }
+
+        ProjectService.Route _selectedGPSData;
+
+        public ProjectService.Route SelectedGPSData
+        {
+            get
+            { return _selectedGPSData; }
+            set
+            {
+                _selectedGPSData = value;
+                RaisePropertyChange("SelectedGPSData");
+            }
+        }
+
+
         public ICommand LoginCMD { get; internal set; }
         public ICommand LogoutCMD { get; internal set; }
 
 
         public MainWindowVM()
         {
-            LoginCMD = new RelayCommand(Login,canLogin);
-            LogoutCMD = new RelayCommand(Logout,(obj) => true);
-            proxy = new ProjectService.ClientServiceClient();
+            Password = "";
+            LoginCMD = new RelayCommand(Login, canLogin);
+            LogoutCMD = new RelayCommand(Logout, (obj) => true);
         }
 
         private void Logout(object obj)
         {
-            throw new NotImplementedException();
+            proxy.Close();
+            IsLoggedIn = false;
+            Routes = null;
+            SelectedRoute = null;
         }
 
         private bool canLogin(object obj)
-        {            
-            return (Username!=null && Username.Trim().Length > 0);
+        {
+            return ((Username != null && Username.Trim().Length > 0) && (Password != null && Password.Length > 0));
         }
+
+        public delegate void OnLogin(eLoginStatus status);
+        public event OnLogin LoginEvent;
 
         private void Login(object obj)
         {
+            proxy = new ProjectService.ClientServiceClient();
             _userKey = proxy.Login(Username, EncodeMD5(Password));
 
-            if (_userKey == null) ??;
+            if (_userKey == null)
+            {
+                IsLoggedIn = false;
+                RaiseLoginEvent(eLoginStatus.LoginError);
+            }
+            else
+            {
+                IsLoggedIn = true;
+                RaiseLoginEvent(eLoginStatus.LoginSuccessful);
+                Routes = proxy.GetAllRoutes().ToList();
+            }
+        }
 
-            IsLoggedIn = (_userKey != null);
-
+        private void RaiseLoginEvent(eLoginStatus status)
+        {
+            var x = LoginEvent;
+            if (x != null) x(status);
         }
 
         private string EncodeMD5(string password)

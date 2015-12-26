@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using ServiceLibrary.ProjectService;
-using GPSDataService.Models;//using ServiceLibrary;
+using GPSDataService.Models;
 
 namespace TransportProject.ViewModels
 {
@@ -188,6 +187,10 @@ namespace TransportProject.ViewModels
             return saver.Export(Routes.AsEnumerable(), OpenAfter);
         }
 
+        bool _isWaiting = false;
+        public bool isWaiting { get { return _isWaiting;  } set { _isWaiting = value; RaisePropertyChange("isWaiting"); } }
+
+
 
 
         public MainWindowVM()
@@ -215,17 +218,20 @@ namespace TransportProject.ViewModels
 
         private ClientServiceClient proxy;
 
-        private void Login(object obj)
+        private async void LoginToService()
         {
+            isWaiting = true;
+
             proxy = new ClientServiceClient();
-            string token = proxy.RequestValidationToken();
+            string token = await proxy.RequestValidationTokenAsync();
             string pass = EncodeMD5(Password + token);
-            _userKey = proxy.Login(Username, pass);
+            _userKey = await proxy.LoginAsync(Username, pass);
 
             if (_userKey == null)
             {
                 IsLoggedIn = false;
                 RaiseLoginEvent(eLoginStatus.LoginError);
+                proxy.Close();
             }
             else
             {
@@ -233,6 +239,12 @@ namespace TransportProject.ViewModels
                 RaiseLoginEvent(eLoginStatus.LoginSuccessful);
                 Routes = proxy.GetAllRoutes().ToList();
             }
+            isWaiting = false;
+        }
+
+        private void Login(object obj)
+        {
+            LoginToService();
         }
 
         private void RaiseLoginEvent(eLoginStatus status)

@@ -305,7 +305,7 @@ namespace GPSDataService
 
         public string RequestValidationToken()
         {
-            if (_validationToken == "AUTHENTICATED") return null;
+            if (_isLogged) return null;
 
             _validationToken = Guid.NewGuid().ToString().Replace("-","");
 

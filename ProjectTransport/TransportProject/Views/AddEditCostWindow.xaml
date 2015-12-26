@@ -7,7 +7,7 @@
         xmlns:tools="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         Title="Add/Edit Additional Cost" Height="187" Width="308"
-        ResizeMode="NoResize">
+        ResizeMode="CanMinimize">
     <Grid>
         <Button x:Name="button" Content="Cancel" IsCancel="True" HorizontalAlignment="Left" Margin="10,119,0,0" VerticalAlignment="Top" Width="76"/>
         <Button x:Name="button_Copy" Content="OK" IsEnabled="{Binding isDataValid}" HorizontalAlignment="Left" Margin="208,119,0,0" VerticalAlignment="Top" Width="76" Click="button_Copy_Click"/>

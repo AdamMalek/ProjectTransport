@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:TransportProject.ViewModels"
         mc:Ignorable="d"
         Title="Transport Manager" Height="527.8" Width="740" Loaded="Window_Loaded"
-        ResizeMode="NoResize"
+        ResizeMode="CanMinimize"
         Closing="Window_Closing">
     <Window.DataContext>
         <vm:MainWindowVM LoginEvent="OnLogin"></vm:MainWindowVM>
@@ -53,5 +53,6 @@
         <Button x:Name="btnDeleteGPSData" Content="Delete selected route point" HorizontalAlignment="Left" Margin="545,37,0,0" VerticalAlignment="Top" Width="177" Height="31" IsEnabled="{Binding isDataSelected}" Click="btnDeleteGPSData_Click"/>
         <Button x:Name="button2" Content="Export data" IsEnabled="{Binding CanExport}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="10,431,0,0" Height="29" Click="button2_Click"/>
         <CheckBox x:Name="checkBox" Content="Open after export" IsChecked="{Binding OpenAfter}" IsEnabled="{Binding CanExport}" HorizontalAlignment="Left" Margin="44,465,0,0" VerticalAlignment="Top"/>
+        <ProgressBar HorizontalAlignment="Left" Visibility="{Binding isWaiting, Converter={StaticResource BoolToVis}}" IsIndeterminate="True" Height="11" Margin="545,10,0,0" VerticalAlignment="Top" Width="177"/>
     </Grid>
 </Window>

@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:TransportProject.Views"
         mc:Ignorable="d"
         Title="Add/Edit Route" Height="173.361" Width="477.049"
-        ResizeMode="NoResize">
+        ResizeMode="CanMinimize">
     <Grid>
         <Button x:Name="button" IsCancel="True" Content="Cancel" HorizontalAlignment="Left" Margin="10,103,0,0" VerticalAlignment="Top" Width="75"/>
         <Button x:Name="button_Copy" IsEnabled="{Binding isDataValid}" IsDefault="True" Content="OK" HorizontalAlignment="Left" Margin="384,103,0,0" VerticalAlignment="Top" Width="75" Click="button_Copy_Click"/>
@@ -16,7 +16,7 @@
         <Label x:Name="label_Copy1" Content="End point position:" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top"/>
         <TextBox x:Name="textBox_Copy" HorizontalAlignment="Left" Height="23" Margin="130,13,0,0" TextWrapping="Wrap" Text="{Binding RouteName}" VerticalAlignment="Top" Width="329"/>
         <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="130,41,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="{Binding StartPointLatitude}" Width="161"></TextBox>
-            <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="298,41,0,0" TextWrapping="Wrap" Text="{Binding StartPointLongitude}" VerticalAlignment="Top" Width="161"/>
+        <TextBox x:Name="textBox_Copy1" HorizontalAlignment="Left" Height="23" Margin="298,41,0,0" TextWrapping="Wrap" Text="{Binding StartPointLongitude}" VerticalAlignment="Top" Width="161"/>
         <TextBox x:Name="textBox_Copy2" HorizontalAlignment="Left" Height="23" Margin="130,72,0,0" TextWrapping="Wrap" Text="{Binding EndPointLatitude}" VerticalAlignment="Top" Width="161"/>
         <TextBox x:Name="textBox_Copy3" HorizontalAlignment="Left" Height="23" Margin="298,72,0,0" TextWrapping="Wrap" Text="{Binding EndPointLongitude}" VerticalAlignment="Top" Width="161"/>
 

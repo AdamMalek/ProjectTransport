@@ -1,9 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+# Visual Studio Express 14 for Windows Desktop
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPSDataService", "GPSDataService\GPSDataService.csproj", "{2B75CB34-0696-4164-A4D0-207D8425E807}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerApplication", "GPSDataService\ServerApplication.csproj", "{2B75CB34-0696-4164-A4D0-207D8425E807}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServiceConnectionContext", "ServiceContext\ServiceConnectionContext.csproj", "{C7B10CAE-91AE-47E5-83B7-18D6E242575D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerServiceReference", "ServiceLibrary\ServerServiceReference.csproj", "{BB4F5AAE-AFC0-433C-8131-A44CCA11DEA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientApplication", "TransportProject\ClientApplication.csproj", "{A4E91535-D892-4F41-8788-DDA22E6F1294}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExcelExporterLibrary", "ExcelSaver\ExcelExporterLibrary.csproj", "{D2DE88F3-5DF1-4B9F-96A3-DBA32944896F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +23,22 @@ Global
 		{2B75CB34-0696-4164-A4D0-207D8425E807}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B75CB34-0696-4164-A4D0-207D8425E807}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B75CB34-0696-4164-A4D0-207D8425E807}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7B10CAE-91AE-47E5-83B7-18D6E242575D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7B10CAE-91AE-47E5-83B7-18D6E242575D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7B10CAE-91AE-47E5-83B7-18D6E242575D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7B10CAE-91AE-47E5-83B7-18D6E242575D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB4F5AAE-AFC0-433C-8131-A44CCA11DEA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB4F5AAE-AFC0-433C-8131-A44CCA11DEA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB4F5AAE-AFC0-433C-8131-A44CCA11DEA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB4F5AAE-AFC0-433C-8131-A44CCA11DEA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4E91535-D892-4F41-8788-DDA22E6F1294}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2DE88F3-5DF1-4B9F-96A3-DBA32944896F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2DE88F3-5DF1-4B9F-96A3-DBA32944896F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2DE88F3-5DF1-4B9F-96A3-DBA32944896F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2DE88F3-5DF1-4B9F-96A3-DBA32944896F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

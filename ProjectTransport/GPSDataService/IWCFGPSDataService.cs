@@ -42,6 +42,18 @@ namespace GPSDataService
         bool Delete(Route route);
 
         [OperationContract]
+        bool AddData(GPSData data);
+
+        [OperationContract]
+        bool UpdateData(GPSData data);
+
+        [OperationContract]
+        bool DeleteData(GPSData data);
+
+        [OperationContract]
+        string RequestValidationToken();
+
+        [OperationContract]
         string Login(string login, string password);
 
         [OperationContract]

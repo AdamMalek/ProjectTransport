@@ -1,0 +1,473 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="WCFGPSDataService" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="TCPEndpoint_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <msb:BinaryEncoding xmlns:msb="http://schemas.microsoft.com/ws/06/2004/mspolicy/netbinary1" />
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <msf:WindowsTransportSecurity xmlns:msf="http://schemas.microsoft.com/ws/2006/05/framing/policy">
+                  <msf:ProtectionLevel>EncryptAndSign</msf:ProtectionLevel>
+                </msf:WindowsTransportSecurity>
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="HTTPEndpoint_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SymmetricBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:ProtectionToken>
+              <wsp:Policy>
+                <sp:SecureConversationToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                  <wsp:Policy>
+                    <sp:RequireDerivedKeys />
+                    <sp:BootstrapPolicy>
+                      <wsp:Policy>
+                        <sp:SignedParts>
+                          <sp:Body />
+                          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+                          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+                        </sp:SignedParts>
+                        <sp:EncryptedParts>
+                          <sp:Body />
+                        </sp:EncryptedParts>
+                        <sp:SymmetricBinding>
+                          <wsp:Policy>
+                            <sp:ProtectionToken>
+                              <wsp:Policy>
+                                <sp:SpnegoContextToken sp:IncludeToken="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy/IncludeToken/AlwaysToRecipient">
+                                  <wsp:Policy>
+                                    <sp:RequireDerivedKeys />
+                                  </wsp:Policy>
+                                </sp:SpnegoContextToken>
+                              </wsp:Policy>
+                            </sp:ProtectionToken>
+                            <sp:AlgorithmSuite>
+                              <wsp:Policy>
+                                <sp:Basic256 />
+                              </wsp:Policy>
+                            </sp:AlgorithmSuite>
+                            <sp:Layout>
+                              <wsp:Policy>
+                                <sp:Strict />
+                              </wsp:Policy>
+                            </sp:Layout>
+                            <sp:IncludeTimestamp />
+                            <sp:EncryptSignature />
+                            <sp:OnlySignEntireHeadersAndBody />
+                          </wsp:Policy>
+                        </sp:SymmetricBinding>
+                        <sp:Wss11>
+                          <wsp:Policy />
+                        </sp:Wss11>
+                        <sp:Trust10>
+                          <wsp:Policy>
+                            <sp:MustSupportIssuedTokens />
+                            <sp:RequireClientEntropy />
+                            <sp:RequireServerEntropy />
+                          </wsp:Policy>
+                        </sp:Trust10>
+                      </wsp:Policy>
+                    </sp:BootstrapPolicy>
+                  </wsp:Policy>
+                </sp:SecureConversationToken>
+              </wsp:Policy>
+            </sp:ProtectionToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+            <sp:IncludeTimestamp />
+            <sp:EncryptSignature />
+            <sp:OnlySignEntireHeadersAndBody />
+          </wsp:Policy>
+        </sp:SymmetricBinding>
+        <sp:Wss11 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy />
+        </sp:Wss11>
+        <sp:Trust10 xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:MustSupportIssuedTokens />
+            <sp:RequireClientEntropy />
+            <sp:RequireServerEntropy />
+          </wsp:Policy>
+        </sp:Trust10>
+        <wsaw:UsingAddressing />
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="HTTPEndpoint_RemoteAddRoute_Input_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsp:Policy wsu:Id="HTTPEndpoint_RemoteAddRoute_output_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:SignedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+          <sp:Header Name="To" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="From" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="FaultTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="ReplyTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="MessageID" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="RelatesTo" Namespace="http://www.w3.org/2005/08/addressing" />
+          <sp:Header Name="Action" Namespace="http://www.w3.org/2005/08/addressing" />
+        </sp:SignedParts>
+        <sp:EncryptedParts xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <sp:Body />
+        </sp:EncryptedParts>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="http://localhost:1337/?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="http://localhost:1337/?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="http://localhost:1337/?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/GPSDataService.Models" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="IClientService_AddRoute_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddRoute" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_AddRoute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddRouteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_AddRoutes_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddRoutes" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_AddRoutes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddRoutesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_GetAllRoutes_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllRoutes" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_GetAllRoutes_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetAllRoutesResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_GetRouteById_InputMessage">
+    <wsdl:part name="parameters" element="tns:GetRouteById" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_GetRouteById_OutputMessage">
+    <wsdl:part name="parameters" element="tns:GetRouteByIdResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_UpdateRoute_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateRoute" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_UpdateRoute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateRouteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Test_InputMessage">
+    <wsdl:part name="parameters" element="tns:Test" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Test_OutputMessage">
+    <wsdl:part name="parameters" element="tns:TestResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Delete_InputMessage">
+    <wsdl:part name="parameters" element="tns:Delete" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Delete_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_AddData_InputMessage">
+    <wsdl:part name="parameters" element="tns:AddData" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_AddData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:AddDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_UpdateData_InputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateData" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_UpdateData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UpdateDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_DeleteData_InputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteData" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_DeleteData_OutputMessage">
+    <wsdl:part name="parameters" element="tns:DeleteDataResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_RequestValidationToken_InputMessage">
+    <wsdl:part name="parameters" element="tns:RequestValidationToken" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_RequestValidationToken_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RequestValidationTokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Login_InputMessage">
+    <wsdl:part name="parameters" element="tns:Login" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Login_OutputMessage">
+    <wsdl:part name="parameters" element="tns:LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Register_InputMessage">
+    <wsdl:part name="parameters" element="tns:Register" />
+  </wsdl:message>
+  <wsdl:message name="IClientService_Register_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RegisterResponse" />
+  </wsdl:message>
+  <wsdl:message name="IRemoteService_RemoteAddRoute_InputMessage">
+    <wsdl:part name="parameters" element="tns:RemoteAddRoute" />
+  </wsdl:message>
+  <wsdl:message name="IRemoteService_RemoteAddRoute_OutputMessage">
+    <wsdl:part name="parameters" element="tns:RemoteAddRouteResponse" />
+  </wsdl:message>
+  <wsdl:portType msc:usingSession="true" name="IClientService">
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddRoute">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/AddRoute" message="tns:IClientService_AddRoute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/AddRouteResponse" message="tns:IClientService_AddRoute_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddRoutes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/AddRoutes" message="tns:IClientService_AddRoutes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/AddRoutesResponse" message="tns:IClientService_AddRoutes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetAllRoutes">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/GetAllRoutes" message="tns:IClientService_GetAllRoutes_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/GetAllRoutesResponse" message="tns:IClientService_GetAllRoutes_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="GetRouteById">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/GetRouteById" message="tns:IClientService_GetRouteById_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/GetRouteByIdResponse" message="tns:IClientService_GetRouteById_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateRoute">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/UpdateRoute" message="tns:IClientService_UpdateRoute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/UpdateRouteResponse" message="tns:IClientService_UpdateRoute_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Test">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/Test" message="tns:IClientService_Test_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/TestResponse" message="tns:IClientService_Test_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Delete">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/Delete" message="tns:IClientService_Delete_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/DeleteResponse" message="tns:IClientService_Delete_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="AddData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/AddData" message="tns:IClientService_AddData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/AddDataResponse" message="tns:IClientService_AddData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="UpdateData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/UpdateData" message="tns:IClientService_UpdateData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/UpdateDataResponse" message="tns:IClientService_UpdateData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="DeleteData">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/DeleteData" message="tns:IClientService_DeleteData_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/DeleteDataResponse" message="tns:IClientService_DeleteData_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="RequestValidationToken">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/RequestValidationToken" message="tns:IClientService_RequestValidationToken_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/RequestValidationTokenResponse" message="tns:IClientService_RequestValidationToken_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Login">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/Login" message="tns:IClientService_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/LoginResponse" message="tns:IClientService_Login_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation msc:isInitiating="true" msc:isTerminating="false" name="Register">
+      <wsdl:input wsaw:Action="http://tempuri.org/IClientService/Register" message="tns:IClientService_Register_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IClientService/RegisterResponse" message="tns:IClientService_Register_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:portType name="IRemoteService">
+    <wsdl:operation name="RemoteAddRoute">
+      <wsdl:input wsaw:Action="http://tempuri.org/IRemoteService/RemoteAddRoute" message="tns:IRemoteService_RemoteAddRoute_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/IRemoteService/RemoteAddRouteResponse" message="tns:IRemoteService_RemoteAddRoute_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="TCPEndpoint" type="tns:IClientService">
+    <wsp:PolicyReference URI="#TCPEndpoint_policy" />
+    <soap12:binding transport="http://schemas.microsoft.com/soap/tcp" />
+    <wsdl:operation name="AddRoute">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/AddRoute" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddRoutes">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/AddRoutes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetAllRoutes">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/GetAllRoutes" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="GetRouteById">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/GetRouteById" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateRoute">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/UpdateRoute" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Test">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/Test" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Delete">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/Delete" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="AddData">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/AddData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateData">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/UpdateData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteData">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/DeleteData" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="RequestValidationToken">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/RequestValidationToken" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Login">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/Login" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Register">
+      <soap12:operation soapAction="http://tempuri.org/IClientService/Register" style="document" />
+      <wsdl:input>
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="HTTPEndpoint" type="tns:IRemoteService">
+    <wsp:PolicyReference URI="#HTTPEndpoint_policy" />
+    <soap12:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="RemoteAddRoute">
+      <soap12:operation soapAction="http://tempuri.org/IRemoteService/RemoteAddRoute" style="document" />
+      <wsdl:input>
+        <wsp:PolicyReference URI="#HTTPEndpoint_RemoteAddRoute_Input_policy" />
+        <soap12:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <wsp:PolicyReference URI="#HTTPEndpoint_RemoteAddRoute_output_policy" />
+        <soap12:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="WCFGPSDataService">
+    <wsdl:port name="TCPEndpoint" binding="tns:TCPEndpoint">
+      <soap12:address location="net.tcp://localhost:1338/GPS" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>net.tcp://localhost:1338/GPS</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>DESKTOP-3SKV13A\Adam</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+    <wsdl:port name="HTTPEndpoint" binding="tns:HTTPEndpoint">
+      <soap12:address location="http://localhost:1337/GPS" />
+      <wsa10:EndpointReference>
+        <wsa10:Address>http://localhost:1337/GPS</wsa10:Address>
+        <Identity xmlns="http://schemas.xmlsoap.org/ws/2006/02/addressingidentity">
+          <Upn>DESKTOP-3SKV13A\Adam</Upn>
+        </Identity>
+      </wsa10:EndpointReference>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

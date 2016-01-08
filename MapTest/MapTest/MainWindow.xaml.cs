@@ -20,6 +20,10 @@ using MapTest.CustomMarkers;
 using GPSInterfaces.Models;
 using GPSInterfaces.DAL;
 using System.Windows.Controls.DataVisualization.Charting;
+using System.Windows.Controls.DataVisualization;
+using MapTest.MapHelper;
+using System.Runtime.InteropServices;
+using System.IO;
 
 namespace MapTest
 {
@@ -27,43 +31,17 @@ namespace MapTest
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-    public class RouteToDisplay
-    {
-        public GMapRoute Route { get; set; }
-        public GDirections Directions;
+    
 
-        public double StartFuelLevel;
-        public double EndFuelLevel;
-        public double StartHeight;
-        public double EndHeight;
-
-        public double FuelConsumed
-        {
-            get
-            {
-                return (StartFuelLevel - EndFuelLevel)/Distance * 100;
-            }
-        }
-
-        public ulong Distance {
-            get
-            {
-                return Directions.DistanceValue / 1000;
-            }
-
-        } 
-        public RouteToDisplay()
-        {
-
-        }
-    }
 
 
     public partial class MainWindow : Window
     {
         private List<RouteToDisplay> _routes;
         private List<GMapMarker> _markers;
-
+        private Dictionary<double, double> _valueList;
+        [DllImport("User32.dll")]
+        private static extern bool SetCursorPos(int X, int Y);
         public MainWindow()
         {
             InitializeComponent();
@@ -168,7 +146,7 @@ namespace MapTest
             using (var db = new GPSContext())
             {
                 route = db.Routes.First();
-                positions = route.RouteData.Cast<GPSData>().ToList();
+                positions = route.RouteData.ToList();
             }
 
             DisplayRoute(positions, route);
@@ -260,16 +238,16 @@ namespace MapTest
 
         private void rbtnFuelConsumed_Checked(object sender, RoutedEventArgs e)
         {
-            List<KeyValuePair<ulong, double>> valueList = new List<KeyValuePair<ulong, double>>();
-
+            _valueList = new Dictionary<double, double>();
+            
             for (int i = 0; i < _routes.Count; i++)
             {
-                if (valueList.Count == 0)
-                    valueList.Add(new KeyValuePair<ulong, double>(_routes[i].Distance, _routes[i].FuelConsumed));
+                if (_valueList.Count == 0)
+                    _valueList.Add(_routes[i].Distance, _routes[i].FuelConsumed);
                 else
-                    valueList.Add(new KeyValuePair<ulong, double>(valueList[i - 1].Key + _routes[i].Distance, _routes[i].FuelConsumed));
+                    _valueList.Add(_valueList.Keys.ElementAt(i-1) + _routes[i].Distance, _routes[i].FuelConsumed);
             }
-            ((LineSeries)lineChart.Series[0]).ItemsSource = valueList;
+            ((LineSeries)lineChart.Series[0]).ItemsSource = _valueList;
             yAxis.Title = "Spalanie [l/100km]";
             chart.Title = "Spalanie [l/100km]";
 
@@ -278,23 +256,120 @@ namespace MapTest
 
         private void rbtnHeight_Checked(object sender, RoutedEventArgs e)
         {
-            List<KeyValuePair<ulong, double>> valueList = new List<KeyValuePair<ulong, double>>();
+            _valueList = new Dictionary<double, double>();
 
             for (int i = 0; i < _routes.Count; i++)
             {
-                if (valueList.Count == 0)
-                    valueList.Add(new KeyValuePair<ulong, double>(0, _routes[i].StartHeight));
+                if (_valueList.Count == 0)
+                    _valueList.Add(0, _routes[i].StartHeight);
                 else if (i == _routes.Count - 1)
                 {
-                    valueList.Add(new KeyValuePair<ulong, double>(valueList[i - 1].Key + _routes[i-1].Distance, _routes[i].StartHeight));
-                    valueList.Add(new KeyValuePair<ulong, double>(valueList[i].Key + _routes[i].Distance, _routes[i].EndHeight));
+                    _valueList.Add(_valueList.Keys.ElementAt(i-1) + _routes[i-1].Distance, _routes[i].StartHeight);
+                    _valueList.Add(_valueList.Keys.ElementAt(i) + _routes[i].Distance, _routes[i].EndHeight);
                 }
                 else
-                    valueList.Add(new KeyValuePair<ulong, double>(valueList[i - 1].Key + _routes[i-1].Distance, _routes[i].StartHeight));
+                    _valueList.Add(_valueList.Keys.ElementAt(i-1) + _routes[i-1].Distance, _routes[i].StartHeight);
             }
-            ((LineSeries)lineChart.Series[0]).ItemsSource = valueList;
+            ((LineSeries)lineChart.Series[0]).ItemsSource = _valueList;
             chart.Title = "Wysokość [mnpm]";
             yAxis.Title = "Wysokość [mnpm]";
+        }
+
+
+        public static FrameworkElement FindDescendantWithName(DependencyObject root, string name)
+        {
+            var numChildren = VisualTreeHelper.GetChildrenCount(root);
+
+            for (var i = 0; i < numChildren; i++)
+            {
+                var child = (FrameworkElement)VisualTreeHelper.GetChild(root, i);
+                if (child.Name == name)
+                {
+                    return child;
+                }
+
+                var descendantOfChild = FindDescendantWithName(child, name);
+                if (descendantOfChild != null)
+                {
+                    return descendantOfChild;
+                }
+            }
+
+            return null;
+        }
+
+
+        private void chart_MouseMove(object sender, MouseEventArgs e)
+        {
+            
+        }
+
+
+        private double GetYValue(double X)
+        {
+            double Y = _valueList.SingleOrDefault(n => n.Key == X).Value;
+            return Y;
+        }
+
+        private void SetCursor(int x, int y)
+        {
+            // left boundary
+            var xl = (int)App.Current.MainWindow.Left + (int)lineChart.Margin.Left + (int)yAxis.ActualWidth +20;
+            // top boundary
+            var yt = (int)App.Current.MainWindow.Top + (int)lineChart.Margin.Top + 77;
+
+
+
+            SetCursorPos(x + xl, yt+y);
+        }
+
+      
+        private void lineChart_MouseMove(object sender, MouseEventArgs e)
+        {
+
+            this.Cursor = Cursors.Cross;
+
+            var chart = (Chart)sender;
+            var xAxisRange = (ICategoryAxis)xAxis;
+            var yAxisRange = (IRangeAxis)yAxis;
+            double xHit, yHit;
+
+            xAxis.Cursor = Cursors.Cross;
+            
+
+            var plotArea = FindDescendantWithName(chart, "PlotArea");
+            if (plotArea == null)
+            {
+                return;
+            }
+
+            var mousePositionInPixels = e.GetPosition(plotArea);
+            if (mousePositionInPixels.X >= 0 && mousePositionInPixels.X <= plotArea.Width)
+                xHit = (double)xAxisRange.GetCategoryAtPosition(new UnitValue(mousePositionInPixels.X, Unit.Pixels));
+            else
+                xHit = -1;
+
+            
+
+            yHit = GetYValue(xHit);
+
+            var yHitt = (int)plotArea.Height - (int)yAxisRange.GetPlotAreaCoordinate(yHit).Value;
+
+
+            if (_valueList.ContainsKey(xHit))
+            {
+                SetCursor((int)mousePositionInPixels.X, yHitt);
+            }
+
+            if (xHit != -1)
+            {
+                
+            }
+
+
+
+
+            textBlock.Text = "X value: " + xHit.ToString() + "\r\nY value: " + yHit.ToString() + "\r\nY value in px = " + mousePositionInPixels.Y + "\r\nX value in px = " + mousePositionInPixels.X + "\r\n " + yHitt;
         }
     }
     

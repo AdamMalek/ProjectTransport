@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using GMap;
 using GMap.NET;
 using GMap.NET.WindowsPresentation;
 using GMap.NET.MapProviders;
@@ -23,7 +14,6 @@ using System.Windows.Controls.DataVisualization.Charting;
 using System.Windows.Controls.DataVisualization;
 using MapTest.MapHelper;
 using System.Runtime.InteropServices;
-using System.IO;
 
 namespace MapTest
 {
@@ -31,7 +21,7 @@ namespace MapTest
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     /// 
-    
+
 
 
 
@@ -40,8 +30,12 @@ namespace MapTest
         private List<RouteToDisplay> _routes;
         private List<GMapMarker> _markers;
         private Dictionary<double, double> _valueList;
+        private List<RoutePosValue> _positionValues;
+        
+
         [DllImport("User32.dll")]
         private static extern bool SetCursorPos(int X, int Y);
+
         public MainWindow()
         {
             InitializeComponent();
@@ -95,7 +89,6 @@ namespace MapTest
             return tempRoute;
         }
 
-
         private void DisplayRoute(List<GPSData> points, Route route)
         {
             
@@ -127,9 +120,7 @@ namespace MapTest
             }
 
             myMap.ZoomAndCenterMarkers(null);
-            rbtnFuelConsumed.IsChecked = true;
         }
-
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
@@ -150,6 +141,10 @@ namespace MapTest
             }
 
             DisplayRoute(positions, route);
+            InitializePosValueList();
+            //rbtnFuelConsumed.IsChecked = true;
+            rbtnHeight.IsChecked = true;
+
 
 
 
@@ -230,22 +225,13 @@ namespace MapTest
 
         }
 
-
-
-
-
-       
-
         private void rbtnFuelConsumed_Checked(object sender, RoutedEventArgs e)
         {
             _valueList = new Dictionary<double, double>();
             
-            for (int i = 0; i < _routes.Count; i++)
+            for (int i = 0; i < _positionValues.Count; i++)
             {
-                if (_valueList.Count == 0)
-                    _valueList.Add(_routes[i].Distance, _routes[i].FuelConsumed);
-                else
-                    _valueList.Add(_valueList.Keys.ElementAt(i-1) + _routes[i].Distance, _routes[i].FuelConsumed);
+                _valueList.Add(_positionValues[i + _routes[0].Directions.Route.Count - 1].Distance, _positionValues[i + _routes[0].Directions.Route.Count - 1].FuelConsumed);
             }
             ((LineSeries)lineChart.Series[0]).ItemsSource = _valueList;
             yAxis.Title = "Spalanie [l/100km]";
@@ -258,17 +244,9 @@ namespace MapTest
         {
             _valueList = new Dictionary<double, double>();
 
-            for (int i = 0; i < _routes.Count; i++)
+            for (int i = 0; i < _positionValues.Count; i++)
             {
-                if (_valueList.Count == 0)
-                    _valueList.Add(0, _routes[i].StartHeight);
-                else if (i == _routes.Count - 1)
-                {
-                    _valueList.Add(_valueList.Keys.ElementAt(i-1) + _routes[i-1].Distance, _routes[i].StartHeight);
-                    _valueList.Add(_valueList.Keys.ElementAt(i) + _routes[i].Distance, _routes[i].EndHeight);
-                }
-                else
-                    _valueList.Add(_valueList.Keys.ElementAt(i-1) + _routes[i-1].Distance, _routes[i].StartHeight);
+                _valueList.Add(_positionValues[i].Distance, _positionValues[i].Height);
             }
             ((LineSeries)lineChart.Series[0]).ItemsSource = _valueList;
             chart.Title = "Wysokość [mnpm]";
@@ -323,7 +301,225 @@ namespace MapTest
             SetCursorPos(x + xl, yt+y);
         }
 
-      
+
+        private List<double> GetPointsQuantity(bool s)
+        {
+            List<double> n = new List<double>();
+            if (s)
+            {
+                for (int i = 0; i < _routes.Count; i++)
+                {
+                    if (i == _routes.Count - 1)
+                        n.Add(_routes[i].Directions.Route.Count);
+                    else
+                        n.Add(_routes[i].Directions.Route.Count-1);
+
+
+
+                }
+            }
+            else
+            {
+                for (int i = 1; i < _routes.Count; i++)
+                {
+                    if (i == _routes.Count - 1)
+                        n.Add(_routes[i].Directions.Route.Count);
+                    else
+                        n.Add(_routes[i].Directions.Route.Count-1);
+                }
+            }
+
+            
+            return n;
+        }
+
+        private double[] Approximate(bool heightOrFuelConsump)
+        {
+            double[] result;
+            List<Point> points = new List<Point>();
+            double dist = 0;
+            if (heightOrFuelConsump) //obliczanie wartosci dla wysokosci
+            {
+                for (int i = 0; i < _routes.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        points.Add(new Point
+                        {
+                            X = 0,
+                            Y = _routes[i].StartHeight
+                        });
+                    }
+                    else if (i == _routes.Count - 1)
+                    {
+                        points.Add(new Point
+                        {
+                            X = dist,
+                            Y = _routes[i].StartHeight
+                        });
+                        points.Add(new Point
+                        {
+                            X = dist + _routes[i].Distance,
+                            Y = _routes[i].EndHeight
+                        });
+                    }
+                    else
+                    {
+                        points.Add(new Point
+                        {
+                            X = dist,
+                            Y = _routes[i].StartHeight
+                        });
+                    }
+
+
+                    dist += _routes[i].Distance;
+
+                }
+
+                result = Approximation.Approximation.Approximate(points, GetPointsQuantity(true));
+            }
+
+            else //obliczanie wartosci dla spalania
+            {
+                for (int i = 0; i < _routes.Count; i++)
+                {
+                    if (i == 0)
+                    {
+                        points.Add(new Point
+                        {
+                            X = _routes[i].Distance,
+                            Y = _routes[i].FuelConsumed
+                        });
+                    }
+
+                    else
+                    {
+                        points.Add(new Point
+                        {
+                            X = dist + _routes[i].Distance,
+                            Y = _routes[i].FuelConsumed
+                        });
+                    }
+                    dist += _routes[i].Distance;
+                }
+
+                result = Approximation.Approximation.Approximate(points, GetPointsQuantity(false));
+            }
+
+
+            return result;
+        }
+
+        private void InitializePosValueList()
+        {
+            _positionValues = new List<RoutePosValue>();
+            double[] height, fuelconsumption; //lokalne listy do przechowywania wartosci aproksymacji dla wysokosci i spalania
+            double tempDist = 0; //zmienna pomocnicza
+            double interval;
+
+
+            height = Approximate(true);
+            fuelconsumption = Approximate(false);
+            int p = 0, k = 0;
+
+
+            for (int i = 0; i < _routes.Count; i++)
+            {
+                interval = GetInterval(i);
+                //_positionValues.Add(new RoutePosValue
+                //{
+                //    Position = _routes[i].Route.Position,
+                //    Distance = tempDist,
+                //    FuelConsumed = _routes[i].FuelConsumed,
+                //    Height = _routes[i].StartHeight
+                //});
+
+
+                //if (i == _routes.Count - 1)
+                //{
+                //    _positionValues.Add(new RoutePosValue
+                //    {
+                //        Position = _routes[i].Route.Position,
+                //        Distance = tempDist,
+                //        FuelConsumed = _routes[i].FuelConsumed,
+                //        Height = _routes[i].EndHeight
+                //    });
+                //}
+                for (int j = 0; j < _routes[i].Directions.Route.Count - 1; j++)
+                {
+                    if (i == 0)
+                    {
+                        _positionValues.Add(new RoutePosValue
+                        {
+                            Position = _routes[i].Directions.Route[j],
+                            Distance = tempDist,
+                            FuelConsumed = 0,
+                            Height = height[p]
+                        });
+                        p++;
+
+                    }
+
+                    else if (i==_routes.Count - 1 && j == _routes[i].Directions.Route.Count - 2)
+                    {
+                        _positionValues.Add(new RoutePosValue
+                        {
+                            Position = _routes[i].Directions.Route[j],
+                            Distance = tempDist,
+                            FuelConsumed = fuelconsumption[k],
+                            Height = height[p]
+                        });
+                        p++; k++; tempDist += interval;
+                        _positionValues.Add(new RoutePosValue
+                        {
+                            Position = _routes[i].Directions.Route[j+1],
+                            Distance = tempDist,
+                            FuelConsumed = fuelconsumption[k],
+                            Height = height[p]
+                        });
+                    }
+
+                    else
+                    {
+                        
+                        _positionValues.Add(new RoutePosValue
+                        {
+                            Position = _routes[i].Directions.Route[j],
+                            Distance = tempDist,
+                            FuelConsumed = fuelconsumption[k],
+                            Height = height[p]
+                        });
+                        k++; p++;
+                    }
+                    tempDist += interval;
+
+                }
+
+            }
+
+
+        }
+
+        private double GetInterval(int k)
+        {
+            double distance = _routes[k].Distance;
+
+            return distance / _routes[k].Directions.Route.Count;
+        }
+
+        private void SetDisplayMarker(double X, double Y)
+        {
+            if(rbtnFuelConsumed.IsChecked == true)
+            {
+                
+            }
+
+            else
+            {
+
+            }
+        }
         private void lineChart_MouseMove(object sender, MouseEventArgs e)
         {
 

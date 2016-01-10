@@ -77,12 +77,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Approximation\Approximation.cs" />
+    <Compile Include="CustomMarkers\DisplayMarker.xaml.cs">
+      <DependentUpon>DisplayMarker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomMarkers\CustomMarker.xaml.cs">
       <DependentUpon>CustomMarker.xaml</DependentUpon>
     </Compile>
     <Compile Include="DAL\GPSContext.cs" />
+    <Compile Include="MapHelper\RoutePosValue.cs" />
     <Compile Include="MapHelper\RouteToDisplay.cs" />
     <Compile Include="Models\Route.cs" />
+    <Page Include="CustomMarkers\DisplayMarker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomMarkers\CustomMarker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -136,9 +145,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="CustomMarkers\mapmarker.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="CustomMarkers\customCursor.cur" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

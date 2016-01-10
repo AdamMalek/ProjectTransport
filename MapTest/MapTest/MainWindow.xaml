@@ -11,7 +11,63 @@
         x:Class="MapTest.MainWindow"
         mc:Ignorable="d"
         Title="MainWindow" Height="667.268" Width="827.003">
-
+    <Window.Resources>
+        <ControlTemplate x:Key="CommonAreaSeriesDataPointTemplate" TargetType="chartingToolkit:AreaDataPoint">
+            <!--Comment out data points from the default template; just an empty template-->
+            <Grid x:Name="Root" Opacity="1">
+                <!--<ToolTipService.ToolTip>
+            <StackPanel Margin="2,2,2,2">
+                <ContentControl Content="{TemplateBinding FormattedDependentValue}" />
+                <ContentControl Content="{TemplateBinding FormattedIndependentValue}" />
+            </StackPanel>
+        </ToolTipService.ToolTip>
+        <Ellipse StrokeThickness="{TemplateBinding BorderThickness}" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" />-->
+            </Grid>
+        </ControlTemplate>
+        <Style x:Key="CommonAreaSeriesDataPoint" TargetType="chartingToolkit:AreaDataPoint">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Template" Value="{StaticResource CommonAreaSeriesDataPointTemplate}" />
+        </Style>
+        <Style x:Key="CommonAreaSeriesPath" TargetType="Path">
+            <Setter Property="StrokeThickness" Value="1" />
+            <Setter Property="Stroke" Value="DarkGray" />
+        </Style>
+        <ControlTemplate x:Key="CommonLineSeriesDataPointTemplate" TargetType="chartingToolkit:LineDataPoint">
+            <!--Comment out data points from the default template; just an empty template-->
+            <Grid x:Name="Root" Opacity="1">
+                <!--<ToolTipService.ToolTip>
+            <StackPanel Margin="2,2,2,2">
+                <ContentControl Content="{TemplateBinding FormattedDependentValue}" />
+                <ContentControl Content="{TemplateBinding FormattedIndependentValue}" />-->
+                <!--Example of how to access the bound business object-->
+                <!--<ContentControl Content="{Binding Amount}" DataContext="{TemplateBinding DataContext}" />-->
+                <!--</StackPanel>
+        </ToolTipService.ToolTip>-->
+                <!--<Ellipse StrokeThickness="{TemplateBinding BorderThickness}" Stroke="{TemplateBinding BorderBrush}" Fill="{TemplateBinding Background}" />-->
+            </Grid>
+        </ControlTemplate>
+        <Style x:Key="CommonLineSeriesDataPoint" TargetType="chartingToolkit:LineDataPoint">
+            <Setter Property="IndependentValueStringFormat" Value="{}{0:yyyy}" />
+            <Setter Property="DependentValueStringFormat" Value="{}{0:c0}" />
+            <Setter Property="Background" Value="#FF0077CC" />
+            <Setter Property="BorderBrush" Value="White" />
+            <Setter Property="BorderThickness" Value="2" />
+            <Setter Property="IsTabStop" Value="False" />
+            <Setter Property="Template" Value="{StaticResource CommonLineSeriesDataPointTemplate}" />
+        </Style>
+        <Style x:Key="CommonLineSeriesPolyline" TargetType="Polyline">
+            <Setter Property="StrokeThickness" Value="5" />
+        </Style>
+        <!-- Implicit non-Key'd Styles BasedOn Common Explicit Key'd Styles above -->
+        <Style TargetType="chartingToolkit:AreaSeries">
+            <Setter Property="DataPointStyle" Value="{StaticResource CommonAreaSeriesDataPoint}" />
+            <Setter Property="PathStyle" Value="{StaticResource CommonAreaSeriesPath}" />
+        </Style>
+        <Style TargetType="chartingToolkit:LineSeries">
+            <Setter Property="DataPointStyle" Value="{StaticResource CommonLineSeriesDataPoint}" />
+            <Setter Property="PolylineStyle" Value="{StaticResource CommonLineSeriesPolyline}" />
+        </Style>
+    </Window.Resources>
     <Grid Margin="0,0,-8,5">
         <Button x:Name="button1" Content="Start" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Click="button1_Click" Height="40"/>
         <WindowsPresentation:GMapControl x:Name="myMap" HorizontalAlignment="Left" Height="307" Margin="226,10,0,0" VerticalAlignment="Top" Width="568" MaxZoom="13" Zoom="12">
@@ -23,7 +79,7 @@
                 <chartingToolkit:LinearAxis x:Name="yAxis"  Orientation="Y" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left"/>
                 <chartingToolkit:CategoryAxis x:Name="xAxis" Orientation="X" Title="Dystans [km]" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" />
             </chartingToolkit:Chart.Axes>
-            <chartingToolkit:LineSeries x:Name="chart"  Title="Spalanie [l/100km]" IndependentValueBinding="{Binding Path=Key}" DependentValueBinding="{Binding Path=Value}" ItemsSource="{Binding valueList}" IsSelectionEnabled="True" MouseMove="chart_MouseMove" RenderTransformOrigin="0.504,0.524" Margin="0"/>
+            <chartingToolkit:LineSeries x:Name="chart"  Title="Spalanie [l/100km]" IndependentValueBinding="{Binding Path=Key}" DependentValueBinding="{Binding Path=Value}" ItemsSource="{Binding valueList}" IsSelectionEnabled="True" MouseMove="chart_MouseMove" RenderTransformOrigin="0.504,0.524"/>
         </chartingToolkit:Chart>
         <Viewbox HorizontalAlignment="Left" Height="30" Margin="345,332,0,0" VerticalAlignment="Top" Width="221">
             <GroupBox x:Name="groupBox" Width="175" Height="22">

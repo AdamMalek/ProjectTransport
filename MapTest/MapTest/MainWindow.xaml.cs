@@ -148,7 +148,7 @@ namespace MapTest
 
             _positionValues = helper.InitializePosValueList();
             //rbtnFuelConsumed.IsChecked = true;
-            rbtnHeight.IsChecked = true;
+            rbtnFuelConsumed.IsChecked = true;
 
 
 
@@ -233,10 +233,10 @@ namespace MapTest
         private void rbtnFuelConsumed_Checked(object sender, RoutedEventArgs e)
         {
             _valueList = new Dictionary<double, double>();
-            
-            for (int i = 0; i < _positionValues.Count; i++)
+
+            for (int i = 0; i < (_positionValues.Count-_routes[0].Directions.Route.Count); i++)
             {
-                _valueList.Add(_positionValues[i + _routes[0].Directions.Route.Count - 1].Distance, _positionValues[i + _routes[0].Directions.Route.Count - 1].FuelConsumed);
+                _valueList.Add(_positionValues[i + _routes[0].Directions.Route.Count].Distance, _positionValues[i + _routes[0].Directions.Route.Count].FuelConsumed);
             }
             ((LineSeries)lineChart.Series[0]).ItemsSource = _valueList;
             yAxis.Title = "Spalanie [l/100km]";

@@ -7,6 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Image Name="icon" Source="mapmarker.png" VerticalAlignment="Center" HorizontalAlignment="Center" />
+        <Image Name="icon" Source="mapmarker2.png" VerticalAlignment="Center" HorizontalAlignment="Center" />
     </Grid>
 </UserControl>

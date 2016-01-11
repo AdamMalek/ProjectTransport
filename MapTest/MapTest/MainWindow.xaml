@@ -67,6 +67,7 @@
             <Setter Property="DataPointStyle" Value="{StaticResource CommonLineSeriesDataPoint}" />
             <Setter Property="PolylineStyle" Value="{StaticResource CommonLineSeriesPolyline}" />
         </Style>
+
     </Window.Resources>
     <Grid Margin="0,0,-8,5">
         <Button x:Name="button1" Content="Start" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="200" Click="button1_Click" Height="40"/>
@@ -77,7 +78,9 @@
         <chartingToolkit:Chart  Name="lineChart" VerticalAlignment="Top" Margin="166,377,33,0" Height="254" Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" MouseMove="lineChart_MouseMove">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis x:Name="yAxis"  Orientation="Y" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left"/>
-                <chartingToolkit:CategoryAxis x:Name="xAxis" Orientation="X" Title="Dystans [km]" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" />
+                <chartingToolkit:CategoryAxis x:Name="xAxis" Orientation="X" Title="Dystans [km]" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold"/>
+
+
             </chartingToolkit:Chart.Axes>
             <chartingToolkit:LineSeries x:Name="chart"  Title="Spalanie [l/100km]" IndependentValueBinding="{Binding Path=Key}" DependentValueBinding="{Binding Path=Value}" ItemsSource="{Binding valueList}" IsSelectionEnabled="True" MouseMove="chart_MouseMove" RenderTransformOrigin="0.504,0.524"/>
         </chartingToolkit:Chart>
@@ -91,7 +94,7 @@
             </GroupBox>
 
         </Viewbox>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,349,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="137" Width="125"/>
+        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="623,403,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="77" Width="171" Foreground="#FF2200F9" FontSize="16" FontWeight="Bold"/>
 
 
 

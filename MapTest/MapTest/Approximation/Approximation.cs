@@ -90,7 +90,7 @@ namespace MapTest.Approximation
             }
             double[] result = new double[quantity];
 
-            double[] gaussResult = Approx(points,2);
+            double[] gaussResult = Approx(points,3);
             int k = 0;
             double interval = 0, xVal = points[0].X;
 
@@ -99,7 +99,7 @@ namespace MapTest.Approximation
             {
                 for (double s = 0; s < n[i]; s++)
                 {
-                    for (int j = 0; j <= 2; j++)
+                    for (int j = 0; j <= 3; j++)
                     {
                         result[k] += gaussResult[j] * Math.Pow(xVal, j);
                     }

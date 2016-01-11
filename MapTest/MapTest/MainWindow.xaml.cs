@@ -15,6 +15,7 @@ using System.Windows.Controls.DataVisualization;
 using MapTest.MapHelper;
 using System.Runtime.InteropServices;
 using MapTest.Charting;
+using System.Windows.Data;
 
 namespace MapTest
 {
@@ -32,11 +33,10 @@ namespace MapTest
         private List<GMapMarker> _markers;
         private Dictionary<double, double> _valueList;
         private List<RoutePosValue> _positionValues;
-
         [DllImport("User32.dll")]
         private static extern bool SetCursorPos(int X, int Y);
 
-
+        
 
 
         public MainWindow()
@@ -311,19 +311,33 @@ namespace MapTest
 
 
         //metoda do ustawiania pozycji markera, ktory bedzie "jezdzil" po mapie 
-        private void SetDisplayMarker(double X, double Y)
+        private void SetDisplayMarker(double X)
         {
-            if(rbtnFuelConsumed.IsChecked == true)
-            {
-                
-            }
+            int markersCount = _routes.Count + 1;
+            PointLatLng position = GetPosFromX(X);
+            GMapMarker tempMarker = new GMapMarker(position);
+            tempMarker.Shape = new DisplayMarker(this, tempMarker);
 
+            if (markersCount == myMap.Markers.Count - 1 - _routes.Count)
+            {
+                myMap.Markers.Add(tempMarker);
+            }
             else
             {
-
+                myMap.Markers.RemoveAt(myMap.Markers.Count-1);
+                myMap.Markers.Add(tempMarker);
             }
+            
+
         }
 
+
+        private PointLatLng GetPosFromX(double X)
+        {
+            PointLatLng tempPoint;
+            tempPoint = _positionValues.First(n => n.Distance == X).Position;
+            return tempPoint;
+        }
 
         //event odpowiadajacy za zczytywanie wartości z wykresu
         private void lineChart_MouseMove(object sender, MouseEventArgs e)
@@ -337,6 +351,8 @@ namespace MapTest
             double xHit, yHit;
 
             xAxis.Cursor = Cursors.Cross;
+
+      
             
 
             var plotArea = FindDescendantWithName(chart, "PlotArea");
@@ -352,6 +368,7 @@ namespace MapTest
                 xHit = -1;
 
             
+            
 
             yHit = GetYValue(xHit);
 
@@ -365,13 +382,17 @@ namespace MapTest
 
             if (xHit != -1)
             {
-                
+                SetDisplayMarker(xHit);
             }
 
+            string s;
+            if (rbtnFuelConsumed.IsChecked == true)
+                s = "Spalanie [l/100km] = ";
+            else
+                s = "Wysokość[mnpm] = ";
 
 
-
-            textBlock.Text = "X value: " + xHit.ToString() + "\r\nY value: " + yHit.ToString() + "\r\nY value in px = " + mousePositionInPixels.Y + "\r\nX value in px = " + mousePositionInPixels.X + "\r\n " + yHitt;
+            textBlock.Text = "Dystans[km] = " + Math.Round(xHit, 2).ToString() + "\r\n" + s + Math.Round(yHit, 2).ToString(); 
         }
     }
     

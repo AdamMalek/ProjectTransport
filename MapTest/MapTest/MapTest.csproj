@@ -78,6 +78,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Approximation\Approximation.cs" />
+    <Compile Include="Charting\ChartHelper.cs" />
     <Compile Include="CustomMarkers\DisplayMarker.xaml.cs">
       <DependentUpon>DisplayMarker.xaml</DependentUpon>
     </Compile>

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E64E7D4-6EC5-41A1-A762-9F14CD5D5BAC}</ProjectGuid>
+    <ProjectGuid>{6E32F01D-A935-4D6F-A228-B43ACDFEAD27}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MapTest</RootNamespace>
-    <AssemblyName>MapTest</AssemblyName>
+    <RootNamespace>TransportClientApp</RootNamespace>
+    <AssemblyName>TransportClientApp</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,11 +51,19 @@
       <HintPath>..\packages\GMap.NET.Presentation.1.7.1\lib\net40\GMap.NET.WindowsPresentation.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MahApps.Metro, Version=1.2.2.0, Culture=neutral, PublicKeyToken=f4fb5a3c4d1e5b4f, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.2.2.0\lib\net45\MahApps.Metro.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Controls.DataVisualization.Toolkit, Version=4.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Windows.Controls.DataVisualization.Toolkit.4.0.0.0\lib\net40-Client\System.Windows.Controls.DataVisualization.Toolkit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\MahApps.Metro.1.2.2.0\lib\net45\System.Windows.Interactivity.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml" />
@@ -70,54 +78,46 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
-    <Reference Include="WPFToolkit, Version=3.5.40128.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Approximation\Approximation.cs" />
-    <Compile Include="Charting\ChartHelper.cs" />
-    <Compile Include="CustomMarkers\DisplayMarker.xaml.cs">
-      <DependentUpon>DisplayMarker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="CustomMarkers\CustomMarker.xaml.cs">
-      <DependentUpon>CustomMarker.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DAL\GPSContext.cs" />
-    <Compile Include="MapHelper\GMapHelper.cs" />
-    <Compile Include="MapHelper\RoutePosValue.cs" />
-    <Compile Include="MapHelper\RouteToDisplay.cs" />
-    <Compile Include="Models\Route.cs" />
-    <Page Include="CustomMarkers\DisplayMarker.xaml">
+    <Page Include="CustomMarkers\CustomMarker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomMarkers\CustomMarker.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CustomMarkers\DisplayMarker.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Compile Include="Models\AdditionalCost.cs" />
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Models\GPSDataModel.cs" />
-    <Compile Include="Models\GPSPos.cs" />
-    <Compile Include="RelayCommand\RelayCommand.cs" />
-    <Compile Include="System\Drawing\Point.cs" />
-    <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="Context\GPSContext.cs" />
+    <Compile Include="CustomMarkers\CustomMarker.xaml.cs" />
+    <Compile Include="CustomMarkers\DisplayMarker.xaml.cs" />
+    <Compile Include="Helpers\Approximation.cs" />
+    <Compile Include="Helpers\ChartHelper.cs" />
+    <Compile Include="Helpers\GMapHelper.cs" />
+    <Compile Include="Helpers\RoutePosValue.cs" />
+    <Compile Include="Helpers\RouteToDisplay.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\AdditionalCost.cs" />
+    <Compile Include="Models\GPSDataModel.cs" />
+    <Compile Include="Models\GPSPos.cs" />
+    <Compile Include="Models\Route.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -145,10 +145,9 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Resource Include="CustomMarkers\mapmarker.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="CustomMarkers\mapmarker2.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

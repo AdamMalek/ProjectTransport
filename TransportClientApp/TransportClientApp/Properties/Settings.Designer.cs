@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace MapTest.Properties
+namespace TransportClientApp.Properties
 {
 
 

@@ -49,68 +49,14 @@ namespace MapTest
         }
 
 
-        private GMapMarker AddMarker(GPSData point)
+
+        private void DisplayRoute(List<GPSData> points, Route route, GMapHelper helper)
         {
-            PointLatLng position = new PointLatLng(point.Position.Latitude, point.Position.Longitude);
-            GMapMarker tempMarker = new GMapMarker(position);
-            tempMarker.Shape = new CustomMarker(this, tempMarker, "Position: " + point.Position.Latitude.ToString() + " " 
-                + point.Position.Longitude.ToString() + "\r\nHeight: " + point.Height.ToString() + "\r\nFuel level:" + point.FuelLevel.ToString());
 
-            return tempMarker;
-        }
-
-        private GMapMarker AddMarker(Route route)
-        {
-            PointLatLng position = new PointLatLng(route.EndPoint.Latitude, route.EndPoint.Longitude);
-            GMapMarker tempMarker = new GMapMarker(position);
-            tempMarker.Shape = new CustomMarker(this, tempMarker, "End: " + route.EndPoint.Latitude.ToString() + " "
-                + route.EndPoint.Longitude.ToString());
-
-            return tempMarker;
-        }
-
-        private RouteToDisplay AddRoute(GPSData position1, GPSData position2)
-        {
-            PointLatLng start = new PointLatLng(position1.Position.Latitude, position1.Position.Longitude);
-            PointLatLng end = new PointLatLng(position2.Position.Latitude, position2.Position.Longitude);
-
-            RouteToDisplay tempRoute = new RouteToDisplay();
-
-            GDirections directions;
-            var route = GMapProviders.GoogleMap.GetDirections(out directions, start, end, true, false, false, false, false);
-
-            tempRoute.Route = new GMapRoute(directions.Route);
-            {
-                tempRoute.Route.ZIndex = 1;
-            }
-            tempRoute.StartFuelLevel = position1.FuelLevel;
-            tempRoute.EndFuelLevel = position2.FuelLevel;
-            tempRoute.StartHeight = position1.Height;
-            tempRoute.EndHeight = position2.Height;
-            tempRoute.Directions = directions;
-
-            return tempRoute;
-        }
-
-        private void DisplayRoute(List<GPSData> points, Route route)
-        {
-            
-            _markers = new List<GMapMarker>();
-            _routes = new List<RouteToDisplay>();
+            _markers = helper.SetMarkersList(points, route);
+            _routes = helper.SetRoutesList(points, route);
 
             int k = points.Count;
-
-            for (int i = 0; i < k+1; i++)
-            {
-                if(i!=k)
-                    _markers.Add(AddMarker(points[i]));
-                if (i == k)
-                    _markers.Add(AddMarker(route));
-
-                if(i < k-1)
-                    _routes.Add(AddRoute(points[i], points[i + 1]));
-            }
-
 
             for (int i = 0; i < k+1; i++)
             {
@@ -127,14 +73,7 @@ namespace MapTest
 
         private void button1_Click(object sender, RoutedEventArgs e)
         {
-            //List<PointLatLng> points = new List<PointLatLng>()
-            //{
-            //    new PointLatLng(49.82237679999999, 19.05838449999999),
-            //    new PointLatLng(49.85489339999999, 19.34128420000002),
-            //    new PointLatLng(49.88278560000001, 19.49395789999994),
-            //    new PointLatLng(50.06465009999999, 19.94497990000002)
-            //};
-
+           
             List<GPSData> positions;
             Route route;
             using (var db = new GPSContext())
@@ -143,17 +82,13 @@ namespace MapTest
                 positions = route.RouteData.ToList();
             }
 
-            DisplayRoute(positions, route);
-            ChartHelper helper = new ChartHelper(_routes);
+            GMapHelper gMapHelper = new GMapHelper(this);
+            DisplayRoute(positions, route, gMapHelper);
+            ChartHelper chartHelper = new ChartHelper(_routes);
 
-            _positionValues = helper.InitializePosValueList();
+            _positionValues = chartHelper.InitializePosValueList();
             //rbtnFuelConsumed.IsChecked = true;
             rbtnFuelConsumed.IsChecked = true;
-
-
-
-
-
         }
 
         private void button2_Click(object sender, RoutedEventArgs e)

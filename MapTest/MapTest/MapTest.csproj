@@ -86,6 +86,7 @@
       <DependentUpon>CustomMarker.xaml</DependentUpon>
     </Compile>
     <Compile Include="DAL\GPSContext.cs" />
+    <Compile Include="MapHelper\GMapHelper.cs" />
     <Compile Include="MapHelper\RoutePosValue.cs" />
     <Compile Include="MapHelper\RouteToDisplay.cs" />
     <Compile Include="Models\Route.cs" />

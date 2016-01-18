@@ -18,6 +18,7 @@ using TransportProject.ViewModels;
 using ServiceLibrary.ProjectService;
 using Microsoft.Win32;
 using GPSDataService.Models;
+using TransportProject.Views;
 //using GPSDataService.Models;
 
 namespace TransportProject
@@ -35,9 +36,10 @@ namespace TransportProject
             if (status == eLoginStatus.LoginError)
             {
                 MessageBox.Show("Login failed!");
+                
             }
         }
-
+        
         private void passwordBox_PasswordChanged(object sender, RoutedEventArgs e)
         {
             if (this.DataContext != null)
@@ -160,6 +162,12 @@ namespace TransportProject
                 if (_vm.Export(dialog.FileName) == true) MessageBox.Show("Completed!");
                 else MessageBox.Show("Error during exporting!");
             }
+        }
+
+        private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MapWindow mapWindow = new MapWindow(_vm.SelectedRoute);
+            mapWindow.Show();
         }
     }
 }

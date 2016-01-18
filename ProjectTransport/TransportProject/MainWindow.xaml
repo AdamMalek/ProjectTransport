@@ -29,7 +29,7 @@
             <Button x:Name="button1" Content="LogOut" Command="{Binding LogoutCMD}" Canvas.Left="432" Canvas.Top="7" Width="75"/>
 
         </Canvas>
-        <ListBox x:Name="listBox" SelectedItem="{Binding SelectedRoute}" ItemsSource="{Binding Routes}" HorizontalAlignment="Left" Height="293" Margin="10,37,0,0" VerticalAlignment="Top" Width="160" IsEnabled="{Binding IsLoggedIn}">
+        <ListBox x:Name="listBox" SelectedItem="{Binding SelectedRoute}" ItemsSource="{Binding Routes}" HorizontalAlignment="Left" Height="293" Margin="10,37,0,0" VerticalAlignment="Top" Width="160" IsEnabled="{Binding IsLoggedIn}" MouseDoubleClick="listBox_MouseDoubleClick">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding RouteName}"></TextBlock>

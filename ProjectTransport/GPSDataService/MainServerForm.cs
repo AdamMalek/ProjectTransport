@@ -50,21 +50,22 @@ namespace GPSDataService
 
         private void btnTestWrite_Click(object sender, EventArgs e)
         {
-            User user1 = new User("test1", Helpers.MD5Encoder.EncodeMD5("test1"));
-            User user2 = new User("test2", Helpers.MD5Encoder.EncodeMD5("test2"));
+            User user1 = new User("test1", "test1");
+            User user2 = new User("test2", "test2");
 
             Route testRoute = new Route();
-            testRoute.RouteName = "Krakow - Katowice";
+            testRoute.RouteName = "Bielsko - Warszawa";
             testRoute.User = user1;
-            testRoute.StartPoint = new GPSPos { Latitude = 23.43f, Longitude = 133.22f };
-            testRoute.EndPoint = new GPSPos { Latitude = 35.31f, Longitude = 172.14f };
+            testRoute.StartPoint = new GPSPos { Latitude = 49.82237679999999, Longitude = 19.05838449999999 };
+            testRoute.EndPoint = new GPSPos { Latitude = 52.2296756, Longitude = 21.012228700000037 };
+
             GPSData data1 = new GPSData
             {
                 Id = 0,
                 FuelLevel = 99.2,
                 Height = 332,
-                Position = new GPSPos { Latitude = 26.33f, Longitude = 162.10f },
-                Time = new DateTime(2015, 11, 21, 19, 20, 44)
+                Position = new GPSPos { Latitude = 49.82237679999999, Longitude = 19.05838449999999 },
+                Time = new DateTime(2015, 12, 1, 11, 20, 44)
             };
             data1.AdditionalCosts.Add(new AdditionalCost { Description = "Wjazd na autostrade", Price = 25.22f });
             testRoute.RouteData.Add(data1);
@@ -72,12 +73,51 @@ namespace GPSDataService
             {
                 Id = 1,
                 FuelLevel = 94.2,
-                Height = 132,
-                Position = new GPSPos { Latitude = 30.94f, Longitude = 170.70f },
-                Time = new DateTime(2015, 11, 21, 19, 33, 27)
+                Height = 125,
+                Position = new GPSPos { Latitude = 49.85489339999999, Longitude = 19.34128420000002 },
+                Time = new DateTime(2015, 12, 1, 12, 00, 44)
             };
-            data2.AdditionalCosts.Add(new AdditionalCost { Description = "Wyjazd z autostrady", Price = 35.22f });
             testRoute.RouteData.Add(data2);
+
+            GPSData data3 = new GPSData
+            {
+                Id = 2,
+                FuelLevel = 92.2,
+                Height = 255,
+                Position = new GPSPos { Latitude = 49.88278560000001, Longitude = 19.49395789999994 },
+                Time = new DateTime(2015, 12, 1, 12, 20, 44)
+            };
+            testRoute.RouteData.Add(data3);
+            GPSData data4 = new GPSData
+            {
+                Id = 3,
+                FuelLevel = 84.2,
+                Height = 66,
+                Position = new GPSPos { Latitude = 50.06465009999999, Longitude = 19.94497990000002 },
+                Time = new DateTime(2015, 12, 1, 12, 25, 27)
+            };
+            data4.AdditionalCosts.Add(new AdditionalCost { Description = "Wyjazd z autostrady", Price = 35.22f });
+            testRoute.RouteData.Add(data4);
+
+            GPSData data5 = new GPSData
+            {
+                Id = 4,
+                FuelLevel = 73.2,
+                Height = 455,
+                Position = new GPSPos { Latitude = 50.8660773, Longitude = 20.628567699999962 },
+                Time = new DateTime(2015, 12, 1, 12, 40, 27)
+            };
+            testRoute.RouteData.Add(data5);
+
+            GPSData data6 = new GPSData
+            {
+                Id = 5,
+                FuelLevel = 60.2,
+                Height = 222,
+                Position = new GPSPos { Latitude = 51.40272359999999, Longitude = 21.14713329999995 },
+                Time = new DateTime(2015, 12, 1, 12, 40, 27)
+            };
+            testRoute.RouteData.Add(data6);
 
             Route testRoute2 = new Route();
             testRoute2.User = user2;

@@ -167,7 +167,11 @@ namespace TransportProject
         private void listBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             MapWindow mapWindow = new MapWindow(_vm.SelectedRoute);
-            mapWindow.Show();
+            if(mapWindow.myMap.Markers.Count != 0)
+            {
+                mapWindow.Show();
+            }
+           
         }
     }
 }

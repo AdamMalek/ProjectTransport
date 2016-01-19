@@ -75,7 +75,7 @@
         <chartingToolkit:Chart  Name="lineChart" VerticalAlignment="Top" Margin="269,538,10,0" Height="277" Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" MouseMove="lineChart_MouseMove">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis x:Name="yAxis"  Orientation="Y" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left"/>
-                <chartingToolkit:CategoryAxis x:Name="xAxis" Orientation="X" Title="Dystans [km]" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold"/>
+                <chartingToolkit:CategoryAxis x:Name="xAxis" Orientation="X" Title="Dystans [km]" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" Visibility="Hidden"/>
 
 
             </chartingToolkit:Chart.Axes>
@@ -100,6 +100,7 @@
             <TextBlock x:Name="tbChartInfo" TextWrapping="Wrap" Text="Dystans [km] =     Spalanie [l/100km] =     " HorizontalAlignment="Center" Margin="8,8,8,-2" Width="598" FontSize="18.667" VerticalAlignment="Center" FontFamily="Lucida Fax" FontWeight="Bold" Foreground="Black" Height="33"/>
 
         </Border>
+        <Label x:Name="label" Content="Dystans[km]" HorizontalAlignment="Left" Margin="452,749,0,0" VerticalAlignment="Top" Height="43" Width="132" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold"/>
 
 
 

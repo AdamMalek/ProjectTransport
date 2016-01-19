@@ -23,6 +23,7 @@ using System.Windows.Controls.DataVisualization;
 using MapTest.CustomMarkers;
 using GMap.NET.MapProviders;
 using GPSDataService.Models;
+using System.Threading;
 
 namespace TransportProject.Views
 {
@@ -45,6 +46,7 @@ namespace TransportProject.Views
         private double RouteDistance;
         private Route _route;
         private List<AdditionalCost> costs;
+        bool canWork = true;
 
         GMapHelper gMapHelper;
         [DllImport("User32.dll")]
@@ -66,19 +68,38 @@ namespace TransportProject.Views
             List<GPSData> positions;
             costs = _route.RouteData.SelectMany(n => n.AdditionalCosts).Distinct().ToList();
             positions = _route.RouteData.ToList();
-            
-           
-            gMapHelper = new GMapHelper(this);
-            DisplayRoute(positions, _route, gMapHelper);
-            ChartHelper chartHelper = new ChartHelper(_routes);
 
-            _positionValues = chartHelper.InitializePosValueList();
-            GMapMarker marker = new GMapMarker(_positionValues[0].Position);
-            marker.Shape = new DisplayMarker(this, marker);
-            myMap.Markers.Add(marker);
-            //rbtnFuelConsumed.IsChecked = true;
-            rbtnFuelConsumed.IsChecked = true;
-            FillTbInfo();
+           if (positions == null)
+                canWork = false;
+
+           if (canWork == true)
+            {
+                gMapHelper = new GMapHelper(this);
+                DisplayRoute(positions, _route, gMapHelper);
+
+                if(canWork == true)
+                {
+                    ChartHelper chartHelper = new ChartHelper(_routes);
+
+                    _positionValues = chartHelper.InitializePosValueList();
+                    GMapMarker marker = new GMapMarker(_positionValues[0].Position);
+                    marker.Shape = new DisplayMarker(this, marker);
+                    myMap.Markers.Add(marker);
+                    //rbtnFuelConsumed.IsChecked = true;
+                    rbtnFuelConsumed.IsChecked = true;
+                    FillTbInfo();
+                }
+                else if(canWork == false)
+                {
+                    MessageBox.Show("Gps data invalid!");
+                    this.Close();
+                }
+            }
+            else if(canWork == false)
+            {
+                MessageBox.Show("Gps data invalid!");
+                this.Close();
+            }
         }
 
         //funkcja która wypełnia textblocka z informacjami o szczegółach trasy.
@@ -113,21 +134,30 @@ namespace TransportProject.Views
             _markers = helper.SetMarkersList(points, route);
             _routes = helper.SetRoutesList(points, route);
 
-            int k = points.Count;
-
-            for (int i = 0; i < k + 1; i++)
+            if(_routes == null)
             {
-                myMap.Markers.Add(_markers[i]);
-
-                if (i < k - 1)
-                {
-                    myMap.Markers.Add(_routes[i].Route);
-                }
+                canWork = false;              
             }
 
-            
+            else
+            {
+                int k = points.Count;
 
-            myMap.ZoomAndCenterMarkers(null);
+                for (int i = 0; i < k + 1; i++)
+                {
+                    myMap.Markers.Add(_markers[i]);
+
+                    if (i < k - 1)
+                    {
+                        myMap.Markers.Add(_routes[i].Route);
+                    }
+                }
+
+
+
+                myMap.ZoomAndCenterMarkers(null);
+            }
+            
         }
 
 

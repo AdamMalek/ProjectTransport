@@ -50,18 +50,27 @@ namespace MapTest.MapHelper
 
             GDirections directions;
             var route = GMapProviders.GoogleMap.GetDirections(out directions, start, end, true, false, false, false, false);
-
-            tempRoute.Route = new GMapRoute(directions.Route);
+            if(directions == null)
             {
-                tempRoute.Route.ZIndex = 1;
+                return null;
             }
-            tempRoute.StartFuelLevel = position1.FuelLevel;
-            tempRoute.EndFuelLevel = position2.FuelLevel;
-            tempRoute.StartHeight = position1.Height;
-            tempRoute.EndHeight = position2.Height;
-            tempRoute.Directions = directions;
+            else
+            {
+                tempRoute.Route = new GMapRoute(directions.Route);
+                {
+                    tempRoute.Route.ZIndex = 1;
+                }
+                tempRoute.StartFuelLevel = position1.FuelLevel;
+                tempRoute.EndFuelLevel = position2.FuelLevel;
+                tempRoute.StartHeight = position1.Height;
+                tempRoute.EndHeight = position2.Height;
+                tempRoute.Directions = directions;
 
-            return tempRoute;
+                return tempRoute;
+
+            }
+
+
         }
 
 
@@ -70,10 +79,11 @@ namespace MapTest.MapHelper
             List<RouteToDisplay> tempRoutes = new List<RouteToDisplay>();
             int k = points.Count;
 
-            for (int i = 0; i < k + 1; i++)
-            {
-                if (i < k - 1)
-                    tempRoutes.Add(AddRoute(points[i], points[i + 1]));
+            for (int i = 0; i < k - 1; i++)
+            {          
+                tempRoutes.Add(AddRoute(points[i], points[i + 1]));
+                if (tempRoutes[i] == null)
+                    return null;
             }
 
             return tempRoutes;

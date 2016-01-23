@@ -29,13 +29,14 @@
             <Button x:Name="button1" Content="LogOut" Command="{Binding LogoutCMD}" Canvas.Left="432" Canvas.Top="7" Width="75"/>
 
         </Canvas>
-        <ListBox x:Name="listBox" SelectedItem="{Binding SelectedRoute}" ItemsSource="{Binding Routes}" HorizontalAlignment="Left" Height="293" Margin="10,37,0,0" VerticalAlignment="Top" Width="160" IsEnabled="{Binding IsLoggedIn}" MouseDoubleClick="listBox_MouseDoubleClick">
+        <ListBox x:Name="listBox" SelectedItem="{Binding SelectedRoute}" ItemsSource="{Binding Routes}" HorizontalAlignment="Left" Height="141" Margin="10,37,0,0" VerticalAlignment="Top" Width="160" IsEnabled="{Binding IsLoggedIn}" MouseDoubleClick="listBox_MouseDoubleClick">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding RouteName}"></TextBlock>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
         <DataGrid SelectedItem="{Binding SelectedGPSData}" x:Name="listBox1" AutoGenerateColumns="False" IsReadOnly="True" ItemsSource="{Binding SelectedRoute.RouteData}" HorizontalAlignment="Left" Height="414" Margin="175,73,0,0" VerticalAlignment="Top" Width="547" IsEnabled="{Binding IsLoggedIn}" AlternatingRowBackground="#FFF5DCDC" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Time" Binding="{Binding Time}" SortDirection="Ascending"/>
@@ -54,5 +55,13 @@
         <Button x:Name="button2" Content="Export data" IsEnabled="{Binding CanExport}" HorizontalAlignment="Left" VerticalAlignment="Top" Width="160" Margin="10,431,0,0" Height="29" Click="button2_Click"/>
         <CheckBox x:Name="checkBox" Content="Open after export" IsChecked="{Binding OpenAfter}" IsEnabled="{Binding CanExport}" HorizontalAlignment="Left" Margin="44,465,0,0" VerticalAlignment="Top"/>
         <ProgressBar HorizontalAlignment="Left" Visibility="{Binding isWaiting, Converter={StaticResource BoolToVis}}" IsIndeterminate="True" Height="11" Margin="545,10,0,0" VerticalAlignment="Top" Width="177"/>
+        <ListBox x:Name="listBox2" ItemsSource="{Binding SameNameRoutes}" HorizontalAlignment="Left" Height="126" Margin="10,204,0,0" VerticalAlignment="Top" Width="160" MouseDoubleClick="listBox2_MouseDoubleClick">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding RouteName}"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <Label x:Name="label3" Content="Optimal routes:" HorizontalAlignment="Left" Margin="10,178,0,0" VerticalAlignment="Top" Width="106"/>
     </Grid>
 </Window>

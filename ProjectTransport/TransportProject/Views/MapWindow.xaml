@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         Title="MapWindow" Height="859" Width="905" ResizeMode="NoResize">
     <Window.Resources>
+        <!--template odpowiedzialny za to, by data pointy na wykresie sie nie wyswietlaly, tylko byla sama linia-->
         <ControlTemplate x:Key="CommonAreaSeriesDataPointTemplate" TargetType="chartingToolkit:AreaDataPoint">
             <!--Comment out data points from the default template; just an empty template-->
             <Grid x:Name="Root" Opacity="1">
@@ -69,9 +70,10 @@
 
     </Window.Resources>
     <Grid>
+        <!--mapka-->
         <WindowsPresentation:GMapControl x:Name="myMap" HorizontalAlignment="Left" Margin="10,10,0,345" Width="877" MaxZoom="13" Zoom="12"/>
 
-
+        <!-- wykres.-->
         <chartingToolkit:Chart  Name="lineChart" VerticalAlignment="Top" Margin="269,538,10,0" Height="277" Background="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" MouseMove="lineChart_MouseMove">
             <chartingToolkit:Chart.Axes>
                 <chartingToolkit:LinearAxis x:Name="yAxis"  Orientation="Y" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left"/>
@@ -79,9 +81,11 @@
 
 
             </chartingToolkit:Chart.Axes>
+            <!-- tu jest sama "funkcja" do ktorej podpinam wlasnie liste wartosci (eventy rbtnHeightChecked etc.)-->
             <chartingToolkit:LineSeries x:Name="chart"  Title="Spalanie [l/100km]" IndependentValueBinding="{Binding Path=Key}" DependentValueBinding="{Binding Path=Value}" ItemsSource="{Binding valueList}" IsSelectionEnabled="True" RenderTransformOrigin="0.504,0.524" Background="#FF0095FF"/>
         </chartingToolkit:Chart>
 
+        <!-- groupbox z radiobuttonami-->
         <Viewbox HorizontalAlignment="Left" Height="111" Margin="728,538,0,0" VerticalAlignment="Top" Width="159">
             <GroupBox x:Name="gbxCharts" Width="117" Height="82" Background="#CC00B1FF" BorderBrush="{DynamicResource {x:Static SystemColors.InfoBrushKey}}" Header="Wybór wykresu" >
                 <StackPanel Orientation="Vertical">
@@ -91,16 +95,33 @@
             </GroupBox>
 
         </Viewbox>
-        <GroupBox x:Name="gbxRouteInfo" Header="Szczegóły trasy:" HorizontalAlignment="Left" Margin="10,490,0,0" VerticalAlignment="Top" Height="199" Width="254">
-            <TextBlock x:Name="tbRouteInfo" HorizontalAlignment="Left" Margin="0,0,-2,0" TextWrapping="Wrap" Width="244" FontFamily="Britannic Bold" FontSize="14.667" Height="160" VerticalAlignment="Top"/>
+        <!-- groubox ze szczegolami trasy-->
+        <GroupBox x:Name="gbxRouteInfo" Header="Szczegóły trasy:" HorizontalAlignment="Left" Margin="10,572,0,0" VerticalAlignment="Top" Height="147" Width="254">
+            <TextBlock x:Name="tbRouteInfo" HorizontalAlignment="Left" Margin="0,0,-2,-6" TextWrapping="Wrap" Width="244" FontFamily="Britannic Bold" FontSize="14.667" Height="114" VerticalAlignment="Top"/>
         </GroupBox>
-        <Button x:Name="btnGetOptimalRoute" Content="Pokaż dalszą drogę" HorizontalAlignment="Left" Margin="10,724,0,0" VerticalAlignment="Top" Width="254" Height="43" Click="btnGetOptimalRoute_Click"/>
-        <Button x:Name="btnReturn" Content="Powrót" HorizontalAlignment="Left" Margin="10,772,0,0" VerticalAlignment="Top" Width="254" Height="43" Click="btnReturn_Click"/>
+        <Button x:Name="btnReturn" Content="Powrót" HorizontalAlignment="Left" Margin="10,779,0,0" VerticalAlignment="Top" Width="254" Height="36" Click="btnReturn_Click"/>
+        <!-- ramka z informacjami o aktualnym dystansie i spalaniu gdy mycha jest na wykresie-->
         <Border BorderBrush="Black" BorderThickness="2" Margin="269,490,12,297" Background="#CC119EDA">
             <TextBlock x:Name="tbChartInfo" TextWrapping="Wrap" Text="Dystans [km] =     Spalanie [l/100km] =     " HorizontalAlignment="Center" Margin="8,8,8,-2" Width="598" FontSize="18.667" VerticalAlignment="Center" FontFamily="Lucida Fax" FontWeight="Bold" Foreground="Black" Height="33"/>
 
         </Border>
         <Label x:Name="label" Content="Dystans[km]" HorizontalAlignment="Left" Margin="452,749,0,0" VerticalAlignment="Top" Height="43" Width="132" Foreground="Black" FontFamily="Georgia" FontSize="14" FontWeight="Bold"/>
+        
+        <!-- combo box z lista drog przekazanych do konstruktora. w przypadku jednej drogi jest nieaktywny, tak jak buttony dla drog optymalnych-->
+        <ComboBox x:Name="cbxRoutes" HorizontalAlignment="Left" Margin="10,511,0,0" VerticalAlignment="Top" Width="254" Height="35" SelectedIndex="0" SelectionChanged="cbxRoutes_SelectionChanged">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding RouteId, StringFormat=Route # {0}}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        
+        <ProgressBar HorizontalAlignment="Left" Margin="10,551,0,0" VerticalAlignment="Top" Width="254" Height="16"/>
+        <Button x:Name="btnFastestRoute" Content="Droga najszybsza" HorizontalAlignment="Left" Margin="146,724,0,0" VerticalAlignment="Top" Width="118" Height="50" Click="btnFastestRoute_Click"/>
+        <Button x:Name="btnCheapestRoute" Content="Droga najtańsza" HorizontalAlignment="Left" Margin="10,724,0,0" VerticalAlignment="Top" Width="115" Height="50" Click="btnCheapestRoute_Click"/>
+        <Label x:Name="label1" Content="Trasa:" HorizontalAlignment="Left" Margin="10,490,0,0" VerticalAlignment="Top"/>
 
 
 

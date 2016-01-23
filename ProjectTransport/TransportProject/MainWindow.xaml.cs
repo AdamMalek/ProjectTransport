@@ -173,5 +173,14 @@ namespace TransportProject
             }
            
         }
+
+        private void listBox2_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            MapWindow mapWindow = new MapWindow(_vm.SameNameRoutes);
+            if (mapWindow.myMap.Markers.Count != 0)
+            {
+                mapWindow.Show();
+            }
+        }
     }
 }

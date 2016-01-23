@@ -118,6 +118,7 @@
     <Compile Include="Helpers\Approximation.cs" />
     <Compile Include="Helpers\ChartHelper.cs" />
     <Compile Include="Helpers\GMapHelper.cs" />
+    <Compile Include="Helpers\RouteInfo.cs" />
     <Compile Include="Helpers\RoutePosValue.cs" />
     <Compile Include="Helpers\RouteToDisplay.cs" />
     <Compile Include="RelayCommand.cs" />

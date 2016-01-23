@@ -31,15 +31,7 @@ namespace MapTest.MapHelper
             return tempMarker;
         }
 
-        private GMapMarker AddMarker(Route route)
-        {
-            PointLatLng position = new PointLatLng(route.EndPoint.Latitude, route.EndPoint.Longitude);
-            GMapMarker tempMarker = new GMapMarker(position);
-            tempMarker.Shape = new CustomMarker(_window, tempMarker, "End: " + route.EndPoint.Latitude.ToString() + " "
-                + route.EndPoint.Longitude.ToString());
-
-            return tempMarker;
-        }
+       
 
         private RouteToDisplay AddRoute(GPSData position1, GPSData position2)
         {
@@ -79,7 +71,7 @@ namespace MapTest.MapHelper
             List<RouteToDisplay> tempRoutes = new List<RouteToDisplay>();
             int k = points.Count;
 
-            for (int i = 0; i < k - 1; i++)
+            for (int i = 0; i < k-1; i++)
             {          
                 tempRoutes.Add(AddRoute(points[i], points[i + 1]));
                 if (tempRoutes[i] == null)
@@ -95,12 +87,10 @@ namespace MapTest.MapHelper
             List<GMapMarker> tempMarkers = new List<GMapMarker>();
             int k = points.Count;
 
-            for (int i = 0; i < k + 1; i++)
+            for (int i = 0; i < k; i++)
             {
-                if (i != k)
-                    tempMarkers.Add(AddMarker(points[i]));
-                if (i == k)
-                    tempMarkers.Add(AddMarker(route));  
+                tempMarkers.Add(AddMarker(points[i]));
+                 
             }
 
             return tempMarkers;

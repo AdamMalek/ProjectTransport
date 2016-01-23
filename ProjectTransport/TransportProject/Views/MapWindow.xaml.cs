@@ -1,17 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using MahApps.Metro.Controls;
 using MapTest.MapHelper;
 using GMap.NET.WindowsPresentation;
@@ -23,7 +15,7 @@ using System.Windows.Controls.DataVisualization;
 using MapTest.CustomMarkers;
 using GMap.NET.MapProviders;
 using GPSDataService.Models;
-using System.Threading;
+using TransportProject.Helpers;
 
 namespace TransportProject.Views
 {
@@ -45,8 +37,10 @@ namespace TransportProject.Views
         private List<RoutePosValue> _positionValues;
         private double RouteDistance;
         private Route _route;
+        public List<Route> routes;    
         private List<AdditionalCost> costs;
         bool canWork = true;
+        private List<RouteInfo> _routeInfo; 
 
         GMapHelper gMapHelper;
         [DllImport("User32.dll")]
@@ -57,19 +51,63 @@ namespace TransportProject.Views
             InitializeComponent();
             myMap.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
-            myMap.SetPositionByKeywords("Poland, Bielsko-Biala");
             _route = route;
+            cbxRoutes.IsEnabled = false;
+            btnFastestRoute.IsEnabled = false;
+            btnCheapestRoute.IsEnabled = false;
             myMap.DragButton = MouseButton.Left;
             DoMagic();
         }
 
+        public MapWindow(List<Route> sameNameRoutes)
+        {
+            InitializeComponent();
+            myMap.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
+            myMap.DragButton = MouseButton.Left;
+            routes = sameNameRoutes;
+            _route = sameNameRoutes[0];
+            cbxRoutes.ItemsSource = routes;
+            GetRoutesInfo();
+        }
+
+        //funkcja, ktora pobiera informacje o drogach przekazanych w konstruktorze w celu ustalenia drog optymalnych.
+        private void GetRoutesInfo()
+        {
+            costs = new List<AdditionalCost>();
+            _routeInfo = new List<RouteInfo>();
+            double fuelConsumed;
+
+            for (int i = 0; i < routes.Count; i++)
+            {
+                if (costs.Count != 0)
+                {
+                    costs.Clear();
+
+                }
+                costs = routes[i].RouteData.SelectMany(n => n.AdditionalCosts).Distinct().ToList();
+                fuelConsumed =  routes[i].RouteData.ElementAt(0).FuelLevel - routes[i].RouteData.ElementAt(routes[i].RouteData.Count - 1).FuelLevel;
+
+                _routeInfo.Add(new RouteInfo
+                {
+                    RouteId = i+1,
+                    CostsSum = costs.Sum(n => n.Price) + fuelConsumed * 4.0,
+                    RouteTime = routes[i].RouteData.ElementAt(routes[i].RouteData.Count - 1).Time.Subtract(routes[i].RouteData.ElementAt(0).Time)
+                });
+            }
+            
+        }
+
+
         private void DoMagic()
         {
-            List<GPSData> positions;
-            costs = _route.RouteData.SelectMany(n => n.AdditionalCosts).Distinct().ToList();
+            List<GPSData> positions = new List<GPSData>();
+            
+            if (positions.Count != 0)
+                positions.Clear();
             positions = _route.RouteData.ToList();
 
-           if (positions == null)
+           if (positions == null || positions.Count < 3)
                 canWork = false;
 
            if (canWork == true)
@@ -80,6 +118,9 @@ namespace TransportProject.Views
                 if(canWork == true)
                 {
                     ChartHelper chartHelper = new ChartHelper(_routes);
+                    _positionValues = new List<RoutePosValue>();
+                    if (_positionValues.Count != 0)
+                        _positionValues.Clear();
 
                     _positionValues = chartHelper.InitializePosValueList();
                     GMapMarker marker = new GMapMarker(_positionValues[0].Position);
@@ -106,7 +147,7 @@ namespace TransportProject.Views
         private void FillTbInfo()
         {
             string start, end;
-            double distanceDriven, distanceLeft, avgSpeed, time1;
+            double avgSpeed, time1;
             TimeSpan time;
 
             PointLatLng startPoint = _routes[0].Directions.Route[0];
@@ -115,22 +156,25 @@ namespace TransportProject.Views
             start = _route.RouteName.Split('-').ElementAt(0);
             end = _route.RouteName.Split('-').ElementAt(1);
             GDirections directions;
-            var tempRoute = GMapProviders.GoogleMap.GetDirections(out directions, startPoint, endPoint, true, false, false, false, false);
-            RouteDistance = directions.DistanceValue / 1000.0;
-            distanceDriven = _valueList.ElementAt(_valueList.Count - 1).Key;
-            distanceLeft = RouteDistance - distanceDriven;
+            RouteDistance = _routes.Sum(n=>n.Distance);
+            
 
             time = _route.RouteData.ElementAt(_route.RouteData.Count - 1).Time.Subtract(_route.RouteData.ElementAt(0).Time);
             time1 = time.TotalHours;
-            avgSpeed = distanceDriven / time1;
+            avgSpeed = RouteDistance / time1;
 
-            tbRouteInfo.Text = "Start: " + start + "\r\nKoniec: " + end + "\r\nCałkowity dystans: " + Math.Round(RouteDistance,2) + "km\r\nPrzejechany dystans: " + Math.Round(distanceDriven,2)
-                + "km\r\nPozostało około: " + Math.Round(distanceLeft,2) + "km\r\nCzas jazdy: " + time + "h\r\nŚrednia prędkość: " + Math.Round(avgSpeed,2) + "km/h";
+            tbRouteInfo.Text = "Start: " + start + "\r\nKoniec: " + end + "\r\nCałkowity dystans: " + Math.Round(RouteDistance,2) 
+                + "km\r\nCzas jazdy: " + time + "h\r\nŚrednia prędkość: " + Math.Round(avgSpeed,2) + "km/h";
 
         }
         private void DisplayRoute(List<GPSData> points, Route route, GMapHelper helper)
         {
-
+            _markers = new List<GMapMarker>();
+            _routes = new List<RouteToDisplay>();
+            if(_markers.Count != 0 && _routes.Count != 0 )
+            {
+                _markers.Clear(); _routes.Clear();
+            }
             _markers = helper.SetMarkersList(points, route);
             _routes = helper.SetRoutesList(points, route);
 
@@ -142,8 +186,19 @@ namespace TransportProject.Views
             else
             {
                 int k = points.Count;
+                int p = myMap.Markers.Count;
 
-                for (int i = 0; i < k + 1; i++)
+                if(p != 0)
+                {
+                    myMap.Markers.Clear();
+                    //for (int i = 0; i < p; i++)
+                    //{
+                    //    myMap.Markers.RemoveAt(0);
+                        
+                    //}
+                }
+
+                for (int i = 0; i < k; i++)
                 {
                     myMap.Markers.Add(_markers[i]);
 
@@ -160,10 +215,12 @@ namespace TransportProject.Views
             
         }
 
-
+        //wypełnianie wykresów
         private void rbtnFuelConsumed_Checked(object sender, RoutedEventArgs e)
         {
             _valueList = new Dictionary<double, double>();
+            if (_valueList.Count != 0)
+                _valueList.Clear();
 
             for (int i = 0; i < (_positionValues.Count - _routes[0].Directions.Route.Count); i++)
             {
@@ -173,10 +230,12 @@ namespace TransportProject.Views
             yAxis.Title = "Spalanie [l/100km]";
             chart.Title = "Spalanie [l/100km]";
         }
-
+        //wypełnianie wykresów
         private void rbtnHeight_Checked(object sender, RoutedEventArgs e)
         {
             _valueList = new Dictionary<double, double>();
+            if (_valueList.Count != 0)
+                _valueList.Clear();
 
             for (int i = 0; i < _positionValues.Count; i++)
             {
@@ -263,6 +322,8 @@ namespace TransportProject.Views
             return tempPoint;
         }
 
+
+        //event odpowiadajacy za zczytywanie pozycji myszki z wykresu i przenoszenie markera na mapie. oraz za wypelnianie textblocka z aktualnym info
         private void lineChart_MouseMove(object sender, MouseEventArgs e)
         {
 
@@ -271,7 +332,6 @@ namespace TransportProject.Views
             var yAxisRange = (IRangeAxis)yAxis;
             double xHit, yHit;
 
-            xAxis.Cursor = Cursors.Cross;
 
 
 
@@ -312,6 +372,7 @@ namespace TransportProject.Views
             else
                 s = "Wysokość[mnpm] = ";
 
+            //wypelnianie textblocka z informacjami.
             tbChartInfo.Text = "Dystans[km] = " + Math.Round(xHit, 2).ToString() + "\t" + s + Math.Round(yHit, 2).ToString();
             if(xHit==-1)
                 tbChartInfo.Text = "Dystans[km] = 0" + "\t" + s + Math.Round(yHit, 2).ToString();
@@ -320,68 +381,109 @@ namespace TransportProject.Views
 
 
         //wyznaczanie drogi optymalnej
-        private void btnGetOptimalRoute_Click(object sender, RoutedEventArgs e)
-        {
-            if(myMap.Markers.Count == _routes.Count * 2 + 3)
-            {
-                PointLatLng startPoint = _routes[_routes.Count - 1].Directions.Route[_routes[_routes.Count - 1].Directions.Route.Count - 1];
-                PointLatLng endPoint = new PointLatLng(_route.EndPoint.Latitude, _route.EndPoint.Longitude);
-                //var cost = route.RouteData.SelectMany(n => n.AdditionalCosts).Distinct().ToList();
-                double costSum = (double)costs.Sum(n => n.Price);
-                GDirections directions;
-                GMapRoute optimalRoute;
+        //private void btnGetOptimalRoute_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if(myMap.Markers.Count == _routes.Count * 2 + 3)
+        //    {
+        //        PointLatLng startPoint = _routes[_routes.Count - 1].Directions.Route[_routes[_routes.Count - 1].Directions.Route.Count - 1];
+        //        PointLatLng endPoint = new PointLatLng(_route.EndPoint.Latitude, _route.EndPoint.Longitude);
+        //        //var cost = route.RouteData.SelectMany(n => n.AdditionalCosts).Distinct().ToList();
+        //        double costSum = (double)costs.Sum(n => n.Price);
+        //        GDirections directions;
+        //        GMapRoute optimalRoute;
 
-                if (GetOptimalRoute(costSum) == OptimalRoute.FastestRoute)
-                {
-                    var route = GMapProviders.GoogleMap.GetDirections(out directions, startPoint, endPoint, false, false, false, false, false);
-                    optimalRoute = new GMapRoute(directions.Route);
-                    {
-                        optimalRoute.ZIndex = 2;
-                    }
-                }
-                else
-                {
-                    var route = GMapProviders.GoogleMap.GetDirections(out directions, startPoint, endPoint, false, true, false, false, false);
-                    optimalRoute = new GMapRoute(directions.Route);
-                    {
-                        optimalRoute.ZIndex = 2;
-                    }
-                }
+        //        if (GetOptimalRoute(costSum) == OptimalRoute.FastestRoute)
+        //        {
+        //            var route = GMapProviders.GoogleMap.GetDirections(out directions, startPoint, endPoint, false, false, false, false, false);
+        //            optimalRoute = new GMapRoute(directions.Route);
+        //            {
+        //                optimalRoute.ZIndex = 2;
+        //            }
+        //        }
+        //        else
+        //        {
+        //            var route = GMapProviders.GoogleMap.GetDirections(out directions, startPoint, endPoint, false, true, false, false, false);
+        //            optimalRoute = new GMapRoute(directions.Route);
+        //            {
+        //                optimalRoute.ZIndex = 2;
+        //            }
+        //        }
 
-                myMap.Markers.Add(optimalRoute);
-                myMap.ZoomAndCenterMarkers(null);
-            }
+        //        myMap.Markers.Add(optimalRoute);
+        //        myMap.ZoomAndCenterMarkers(null);
+        //    }
 
-            else
-            {
-                MessageBox.Show("Dodałeś już drogę optymalną!");
-            }
+        //    else
+        //    {
+        //        MessageBox.Show("Dodałeś już drogę optymalną!");
+        //    }
             
 
-        }
+        //}
 
-        private OptimalRoute GetOptimalRoute(double costs)
-        {
-            ulong fuelConsumptionSum = (ulong)_positionValues.Where(n => n.FuelConsumed != 0).Sum(o => o.FuelConsumed);
-            double quantity = (double)_positionValues.Where(n => n.FuelConsumed != 0).Count();
-            double avgFuelConsumption = fuelConsumptionSum / quantity;
+        //private OptimalRoute GetOptimalRoute(double costs)
+        //{
+        //    ulong fuelConsumptionSum = (ulong)_positionValues.Where(n => n.FuelConsumed != 0).Sum(o => o.FuelConsumed);
+        //    double quantity = (double)_positionValues.Where(n => n.FuelConsumed != 0).Count();
+        //    double avgFuelConsumption = fuelConsumptionSum / quantity;
 
-            double costLimit = 0.1 * avgFuelConsumption * (RouteDistance / 100);
+        //    double costLimit = 0.1 * avgFuelConsumption * (RouteDistance / 100);
 
-            if(costs < costLimit)
-            {
-                return OptimalRoute.FastestRoute;
-            }
-            else
-            {
-                return OptimalRoute.NoTollRoute;
-            }
+        //    if(costs < costLimit)
+        //    {
+        //        return OptimalRoute.FastestRoute;
+        //    }
+        //    else
+        //    {
+        //        return OptimalRoute.NoTollRoute;
+        //    }
 
-        }
+        //}
 
         private void btnReturn_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+
+        //event dla wyswietlenia innej drogi z comboboxa
+        private void cbxRoutes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            //funckja bierze zaznaczony indeks z comboboxa i dopasowuje go do indeksu drogi z listy drog przekazanych w konstruktorze, nastepnie wypelnia obiekt _route i oblicza wszystkie informacje na nowych danych.
+            int i = cbxRoutes.SelectedIndex+1;
+            Route routeToDisplay = routes.Single(n => n.RouteId == i);
+            _route = routeToDisplay;
+            DoMagic();
+            rbtnHeight.IsChecked = true;
+        }
+
+
+        //funkcja do pobierania indeksu najtanszej drogi. 
+        private int GetCheapestRoute()
+        {
+            double minCost = _routeInfo.Min(n => n.CostsSum);
+            int index = _routeInfo.Single(n => n.CostsSum == minCost).RouteId;
+            return index -1;
+        }
+        
+        
+        //funkcja do pobierania indeksu najszybszej drogi. 
+
+        private int GetFastestRoute()
+        {
+            TimeSpan minTime = _routeInfo.Min(n => n.RouteTime);
+            int index = _routeInfo.Single(n => n.RouteTime == minTime).RouteId;
+            return index -1;
+        }
+        private void btnCheapestRoute_Click(object sender, RoutedEventArgs e)
+        {
+            
+            cbxRoutes.SelectedIndex = GetCheapestRoute();
+        }
+
+        private void btnFastestRoute_Click(object sender, RoutedEventArgs e)
+        {
+            cbxRoutes.SelectedIndex = GetFastestRoute();
         }
     }
 }

@@ -85,6 +85,15 @@ namespace TransportProject.ViewModels
 
         Route _selectedRoute;
 
+        public List<Route> SameNameRoutes {
+            get {
+                if (_routes == null || _selectedRoute == null) return null;
+               return _routes.Where(r => r.RouteName == _selectedRoute.RouteName).ToList();
+            }
+        }
+        
+       
+
         internal bool RegisterRoute(Route r, eRouteRegisterMethod method)
         {
             if (method == eRouteRegisterMethod.Add)
@@ -155,8 +164,11 @@ namespace TransportProject.ViewModels
                 _selectedRoute = value;
                 RaisePropertyChange("SelectedRoute");
                 RaisePropertyChange("isRouteSelected");
+                RaisePropertyChange("SameNameRoutes");
             }
         }
+
+        
 
         public bool isRouteSelected { get { return SelectedRoute != null && IsLoggedIn; } }
         public bool isDataSelected { get { return SelectedGPSData != null && IsLoggedIn; } }

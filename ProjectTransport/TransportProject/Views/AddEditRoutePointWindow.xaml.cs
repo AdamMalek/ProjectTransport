@@ -58,6 +58,7 @@ namespace TransportProject.Views
             {
                 _vm.AddNewCost(vm.Description,vm.Price);
             }
+            
         }
 
         private void button_Copy_Click(object sender, RoutedEventArgs e)
@@ -69,6 +70,17 @@ namespace TransportProject.Views
             if (result == true)
             {
                 _vm.EditCost(vm.Description,vm.Price);
+            }
+        }
+
+        private void btnAddFromMap_Click(object sender, RoutedEventArgs e)
+        {
+            SetGpsPosWindow window = new SetGpsPosWindow(_vm);
+            var result = window.ShowDialog();
+            if(result == true)
+            {
+                textBox1_Copy.Value = _vm.Latitude;
+                textBox1_Copy3.Value = _vm.Longitude;
             }
         }
 

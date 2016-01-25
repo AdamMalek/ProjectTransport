@@ -16,6 +16,7 @@ using MapTest.CustomMarkers;
 using GMap.NET.MapProviders;
 using GPSDataService.Models;
 using TransportProject.Helpers;
+using System.Threading.Tasks;
 
 namespace TransportProject.Views
 {
@@ -447,14 +448,13 @@ namespace TransportProject.Views
 
 
         //event dla wyswietlenia innej drogi z comboboxa
-        private void cbxRoutes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void cbxRoutes_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            //funckja bierze zaznaczony indeks z comboboxa i dopasowuje go do indeksu drogi z listy drog przekazanych w konstruktorze, nastepnie wypelnia obiekt _route i oblicza wszystkie informacje na nowych danych.
-            int i = cbxRoutes.SelectedIndex+1;
-            Route routeToDisplay = routes.Single(n => n.RouteId == i);
-            _route = routeToDisplay;
+
+            Route s = (Route)cbxRoutes.SelectedValue;
+            _route = s;
             DoMagic();
-            rbtnHeight.IsChecked = true;
+            rbtnHeight.IsChecked = true;  
         }
 
 
@@ -485,5 +485,8 @@ namespace TransportProject.Views
         {
             cbxRoutes.SelectedIndex = GetFastestRoute();
         }
+
+
+        //
     }
 }

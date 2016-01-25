@@ -117,8 +117,6 @@
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
-        
-        <ProgressBar HorizontalAlignment="Left" Margin="10,551,0,0" VerticalAlignment="Top" Width="254" Height="16"/>
         <Button x:Name="btnFastestRoute" Content="Droga najszybsza" HorizontalAlignment="Left" Margin="146,724,0,0" VerticalAlignment="Top" Width="118" Height="50" Click="btnFastestRoute_Click"/>
         <Button x:Name="btnCheapestRoute" Content="Droga najtańsza" HorizontalAlignment="Left" Margin="10,724,0,0" VerticalAlignment="Top" Width="115" Height="50" Click="btnCheapestRoute_Click"/>
         <Label x:Name="label1" Content="Trasa:" HorizontalAlignment="Left" Margin="10,490,0,0" VerticalAlignment="Top"/>

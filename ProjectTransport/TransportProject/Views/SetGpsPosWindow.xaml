@@ -1,0 +1,19 @@
+﻿<Window xmlns:CustomMarkers="clr-namespace:MapTest.CustomMarkers"  x:Class="TransportProject.Views.SetGpsPosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:TransportProject.Views"
+        xmlns:WindowsPresentation="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation" 
+        mc:Ignorable="d"
+        xmlns:vm="clr-namespace:TransportProject.ViewModels"
+        Title="SetGpsPosWindow" Height="395.493" Width="424.225">
+    <Window.DataContext>
+        <vm:AddEditRoutePointVM></vm:AddEditRoutePointVM>
+    </Window.DataContext>
+    <Grid>
+        <WindowsPresentation:GMapControl x:Name="map" HorizontalAlignment="Left" Margin="0,0,0,32" Width="416" MaxZoom="13" Zoom="10"/>
+        <Button x:Name="btnOk" Content="OK" HorizontalAlignment="Left" Margin="0,328,0,0" VerticalAlignment="Top" Width="416" Click="btnOk_Click" Height="27"/>
+
+    </Grid>
+</Window>

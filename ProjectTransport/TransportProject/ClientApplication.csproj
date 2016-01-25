@@ -114,6 +114,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CustomMarkers\CustomMarker.xaml.cs" />
+    <Compile Include="CustomMarkers\CustomMarkerGreen.xaml.cs">
+      <DependentUpon>CustomMarkerGreen.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomMarkers\DisplayMarker.xaml.cs" />
     <Compile Include="Helpers\Approximation.cs" />
     <Compile Include="Helpers\ChartHelper.cs" />
@@ -138,7 +141,14 @@
     <Compile Include="Views\MapWindow.xaml.cs">
       <DependentUpon>MapWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\SetGpsPosWindow.xaml.cs">
+      <DependentUpon>SetGpsPosWindow.xaml</DependentUpon>
+    </Compile>
     <Page Include="CustomMarkers\CustomMarker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomMarkers\CustomMarkerGreen.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -173,6 +183,10 @@
     <Page Include="Views\MapWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SetGpsPosWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
@@ -217,7 +231,9 @@
       <Name>ServerServiceReference</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="CustomMarkers\mapmarker3.png" />
+  </ItemGroup>
   <ItemGroup>
     <Resource Include="CustomMarkers\mapmarker.png" />
     <Resource Include="CustomMarkers\mapmarker2.png" />
